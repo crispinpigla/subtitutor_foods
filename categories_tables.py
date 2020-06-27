@@ -3,6 +3,8 @@
 import requests
 import json
 
+import mysql.connector
+
 
 
 class Categories_Tables:
@@ -101,5 +103,61 @@ class Categories_Tables:
 
 		return( idsprods )
 
+
+
+
+
+
+
+	def create_insert_rows(self):
+
+		datas_to_insert = ''
+		data_to_insert = ''
+
+		cnx = mysql.connector.connect(user='p5_user', password='motdepasse', database='p5_0')
+		cursor = cnx.cursor()
+
+
+		for cat in self.colonnes_cat:
+
+		#	cursor.execute("INSERT INTO Categories (id, nom, id_produits) VALUES (%(id)s, %(name)s, %(idsprods)s)", cat)
+
+			##########
+
+			for key in cat:
+				if key == 'url' :
+					pass
+				elif key != 'idsprods' :
+					data_to_insert += '\'' + cat[key].replace( "'", "\\'") + '\'' + ', '
+				elif key == 'idsprods' :
+					data_to_insert += '\'' + cat[key].replace("'", "\\'") + '\''
+
+			if self.colonnes_cat.index(cat) != ( len(self.colonnes_cat) - 1 ) :
+				data_to_insert = '(' + data_to_insert + '), '
+			else:
+				data_to_insert = '(' + data_to_insert + ') '
+
+			datas_to_insert += data_to_insert
+			data_to_insert = ''
+
+			##########
+
+		create_table = "CREATE TABLE Categories (id VARCHAR(255) NOT NULL, nom VARCHAR(255) NOT NULL, id_produits MEDIUMTEXT, PRIMARY KEY (id) ) ENGINE=INNODB"
+		
+
+		add_cat = ("INSERT INTO Categories "
+           		   "VALUES " + datas_to_insert )
+
+		#print( add_cat, '----' )
+		print('ok')
+
+		
+
+		cursor.execute(create_table)
+		cursor.execute(add_cat)
+
+		cnx.commit()
+		cursor.close()
+		cnx.close()
 
 
