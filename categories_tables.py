@@ -7,15 +7,17 @@ import mysql.connector
 
 
 
-class Categories_Tables:
+class CategoriesTables:
 	"""docstring for Categories_Tables"""
 
 	def __init__(self):
 		
 		self.colonnes_cat = []
 
+		self.first_data_prods = []
 
-	def build_rows(self):
+
+	def build_rows_cat(self):
 		
 		request_cat_open_ff = requests.get('https://fr.openfoodfacts.org/categories/1.json')
 		request_cat_open_ff = json.loads(request_cat_open_ff.text)
@@ -40,7 +42,7 @@ class Categories_Tables:
 		#	print( 'compteur cat : ', compteur_cat )
 			#print( colonne['url'] )
 
-		for i in range(10):
+		for i in range(50):
 			
 			colonne = { 'id':'', 'name':'', 'url':'', 'idsprods':'' }
 
@@ -55,7 +57,21 @@ class Categories_Tables:
 			print( 'compteur cat : ', compteur_cat )
 
 
-		print( self.colonnes_cat )
+		first_data_prods_flash_in = []
+		first_data_prods_flash_out = list( self.first_data_prods )
+
+		for prod in first_data_prods_flash_out :
+			if prod not in first_data_prods_flash_in :
+				first_data_prods_flash_in.append(prod)
+
+		self.first_data_prods = first_data_prods_flash_in
+
+
+
+
+		print( self.colonnes_cat, '\n------------------------' )
+
+		print( self.first_data_prods, '\n------------------------' )
 
 
 
@@ -70,6 +86,8 @@ class Categories_Tables:
 		request_prod_cat_open_ff = json.loads(request_prod_cat_open_ff.text)
 
 		end = request_prod_cat_open_ff["count"]
+
+		id_prod_url_prod = { 'id':'', 'url':'' , 'magasins':'' }
 
 		#while len(request_prod_cat_open_ff["products"]) > 0 :
 
@@ -93,6 +111,12 @@ class Categories_Tables:
 			for produit in request_prod_cat_open_ff["products"] :
 				idsprods += '-' + produit['code'] + '-'
 
+				id_prod_url_prod['id'] = produit['code']
+				id_prod_url_prod['url'] = produit['url']
+				#id_prod_url_prod['magasins'] = produit['stores']
+				self.first_data_prods.append( id_prod_url_prod )
+				id_prod_url_prod = { 'id':'', 'url':'', 'magasins':'' }
+
 			print( request_prod_cat_open_ff["skip"] )
 			print( request_prod_cat_open_ff["page_size"] )
 			print( page_cat )
@@ -109,7 +133,7 @@ class Categories_Tables:
 
 
 
-	def create_insert_rows(self):
+	def insert_rows_cat(self):
 
 		datas_to_insert = ''
 		data_to_insert = ''
@@ -142,18 +166,18 @@ class Categories_Tables:
 
 			##########
 
-		create_table = "CREATE TABLE Categories (id VARCHAR(255) NOT NULL, nom VARCHAR(255) NOT NULL, id_produits MEDIUMTEXT, PRIMARY KEY (id) ) ENGINE=INNODB"
+		#create_table = "CREATE TABLE Categories (id VARCHAR(255) NOT NULL, nom VARCHAR(255) NOT NULL, id_produits MEDIUMTEXT, PRIMARY KEY (id) ) ENGINE=INNODB"
 		
 
-		add_cat = ("INSERT INTO Categories "
-           		   "VALUES " + datas_to_insert )
+		add_cat = ("INSERT INTO Categories VALUES "
+           		    + datas_to_insert )
 
 		#print( add_cat, '----' )
-		print('ok')
+		print('ok 0')
 
 		
 
-		cursor.execute(create_table)
+		#cursor.execute(create_table)
 		cursor.execute(add_cat)
 
 		cnx.commit()

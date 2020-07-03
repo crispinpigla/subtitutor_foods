@@ -35,13 +35,14 @@ CREATE TABLE Produits (
     nom_categories VARCHAR(255),
     labels VARCHAR(255),
     pays_ventes VARCHAR(255),
-    ingredients VARCHAR(255),
+    ingredients TEXT,
     produits_provoqu_allergies VARCHAR(255),
     traces_eventuelles VARCHAR(255),
     nova VARCHAR(255),
     nutriscore VARCHAR(255),
     infos_nutritions TEXT NOT NULL,
     lien_o_ff VARCHAR(255),
+    magasins VARCHAR(255),
     PRIMARY KEY (id)
 )
 ENGINE=INNODB;
@@ -110,7 +111,7 @@ LIMIT taille_page_prod OFFSET (numero_page - 1)*taille_page_prod ;
 
 SELECT nom, quantite, marque, labels, ingredients, produits_provoqu_allergies, traces_eventuelles, nova, nutriscore, infos_nutritions
 FROM Produits
-WHERE nutriscore IN tableau_nutriscores_chercher
+WHERE nutriscore <= nutriscore_prod
 ORDER BY nutriscore
 LIMIT nombre_substituts OFFSET 0 ;
 
@@ -119,6 +120,10 @@ LIMIT nombre_substituts OFFSET 0 ;
 
 
 
+
+SELECT nom FROM Magasins WHERE id_produits LIKE '%-idprod-%'
+
+--      Recherche de magasin
 
 
 
