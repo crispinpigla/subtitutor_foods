@@ -3,12 +3,33 @@
 import requests
 import json
 
+
 import categories_tables
 import produits_tables
 import magasins_table
+import favoris_table
+import join_cat_prod
+import join_mag_prod
+
+import installation_categories
+import installation_magasins
+import installation_produits
+import installation_favoris
+import installation_categories_produits
+import installation_magasins_produits
 
 import monappli
 
+
+installation_categories0 = installation_categories.InstallationCategories()
+installation_produit0 = installation_produits.InstallationProduits()
+#installation_magasins0 = installation_magasins.InstallationMagasins()
+#installation_favoris0 = installation_favoris.InstallationFavoris()
+#installation_categories_produits0 = installation_categories_produits.InstallationCategoriesProduits()
+#installation_magasins_produits0 = installation_magasins_produits.InstallationMagasinsProduits()
+
+
+"""
 cat_table = categories_tables.CategoriesTables()
 cat_table.build_rows_cat()
 cat_table.insert_rows_cat()
@@ -16,11 +37,19 @@ cat_table.insert_rows_cat()
 prod_table = produits_tables.ProduitTables()
 prod_table.insert_rows_prod(cat_table)
 
-#mag_table = magasins_table.MagasinsTables()
-#mag_table.insert_rows_mag()
+cat_prod_table = join_cat_prod.JoinCategorieProduitTable()
+cat_prod_table.insert_rows_cat_prod(cat_table)
 
-#monapp = monappli.MonApplication()
-#monapp.distributeur_menu()
+mag_table = magasins_table.MagasinsTables()
+mag_table.build_rows_mag()
+mag_table.insert_rows_mag()
+
+mag_prod_table = join_mag_prod.JoinMagasinProduitTable()
+mag_prod_table.insert_rows_mag_prod(mag_table)
+"""
+
+monapp = monappli.MonApplication()
+monapp.distributeur_menu()
 
 #-----------------------------------------------------
 

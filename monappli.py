@@ -1,5 +1,14 @@
 
 
+import gestionnaire_categories
+import gestionnaire_produits
+import gestionnaire_magasins
+import gestionnaire_favoris
+
+
+
+
+from datetime import datetime
 
 import mysql.connector
 
@@ -16,129 +25,209 @@ class MonApplication:
 
 	def __init__(self):
 
-		#####################
+		# les gestionnaires
+		self.gest_categories = gestionnaire_categories.GestionnaireCategories()
+		self.gest_produits = gestionnaire_produits.GestionnaireProduits()
+		self.gest_magasins = gestionnaire_magasins.GestionnaireMagasins()
+		self.gest_favoris = gestionnaire_favoris.GestionnaireFavoris()
 
-		cnx = mysql.connector.connect(user='p5_user', password='motdepasse', database='p5_0')
-		cursor = cnx.cursor()
-
-		query = ("SELECT COUNT(*) FROM Categories")
-		cursor.execute(query)
-
-		result = cursor.fetchall()
-
-		self.lignes_cat_bd = result[0][0]
-
-
-		cursor.close()
-		cnx.close()
-
-		#########################
-
+		# lignes des elements dans la base dee donnée
+		self.lignes_cat_bd = 0
 		self.lignes_prod_cat_bd = 0
+		self.lignes_subst_prod_cat_bd = 0
+		self.lignes_fav_bd = 0
 
-		#########################
-
-		self.nombre_substituts = 5
+		# configurations
+		self.nombre_substituts = 10
 		self.nombre_magasin = 5
 		
 		self.page_catego = 1
 		self.page_produ = 1
+		self.page_subst = 1
 		self.page_favo = 1
 
 		self.taille_page_catego = 10
 		self.taille_page_produ = 10
+		self.taille_page_subst = 10
 		self.taille_page_favo = 10
 
+		# les élements affichés
 		self.list_catego_display = []
 		self.list_produ_display = []
+		self.list_subst_display = []
 		self.list_favo_display = []
 
+		# les élements pointés
 		self.category_cursor = {}
 		self.product_cursor = {}
+		self.substitut_cursor = {}
+		self.favori_cursor = {}
 
-		self.nombr_sub = 5
-
-	def ids_prods_to_list_ids_prod(self, str_ids_prods):
-		
-		output = str_ids_prods.split("--")
-		output[0] = output[0][1:]
-		output[-1] = output[-1][:-1]
-
-		return(output)
-
-
-	def installation_tables(self):
-		
-
-		cnx = mysql.connector.connect(user='p5_user', password='motdepasse', database='p5_0')
-		cursor = cnx.cursor()
-
-		create_table_cat = "CREATE TABLE Categories (id VARCHAR(255) NOT NULL, nom VARCHAR(255) NOT NULL, id_produits MEDIUMTEXT, PRIMARY KEY (id) ) ENGINE=INNODB"
-		create_table_prod = "CREATE TABLE Produits (id VARCHAR(255) NOT NULL,nom VARCHAR(255) NOT NULL,quantite VARCHAR(255),marque VARCHAR(255),nom_categories VARCHAR(255),labels VARCHAR(255),pays_ventes VARCHAR(255),ingredients VARCHAR(255),produits_provoqu_allergies VARCHAR(255),traces_eventuelles VARCHAR(255),nova VARCHAR(255),nutriscore VARCHAR(255),infos_nutritions TEXT ,lien_o_ff VARCHAR(255),PRIMARY KEY (id)) ENGINE=INNODB"
-		create_table_mag = "CREATE TABLE Magasins (id VARCHAR(255) NOT NULL,nom VARCHAR(255) NOT NULL,id_produits MEDIUMTEXT,PRIMARY KEY (id)) ENGINE=INNODB"
-		create_table_fav = "CREATE TABLE Favoris ( id SMALLINT UNSIGNED NOT NULL AUTO_INCREMENT, id_produit VARCHAR(50) NOT NULL, id_resultats VARCHAR(255) NOT NULL, date_enregistrement DATETIME NOT NULL, PRIMARY KEY (id) ) ENGINE=INNODB"
-		create_table_join_cat_prod = "CREATE TABLE Join_categories_produits ( id_categorie INT UNSIGNED NOT NULL, id_produit INT UNSIGNED NOT NULL ) ENGINE=INNODB"
-		create_table_join_mag_prod = "CREATE TABLE Join_magasins_produits ( id_magasin INT UNSIGNED NOT NULL, id_produit INT UNSIGNED NOT NULL ) ENGINE=INNODB"
-
-		cursor.execute(create_table_cat)
-		cursor.execute(create_table_prod)
-		cursor.execute(create_table_mag)
-		cursor.execute(create_table_fav)
-
-		cnx.commit()
-		cursor.close()
-		cnx.close()
 
 	def distributeur_menu(self):
 
+		# Définnition du statut de la sélection
 		statut = self.menu0()
 
+		# Boucle principale
 		while statut != 'off' :
-			entree_util = input('Entrez une sélection : ')
 
-			##########################
+			# Entrée de l'utilisateur
+			entree_util = input('\nEntrez une sélection : \n')
 
-			# L"application se trouve au menu 0
+			# L'application se trouve au menu principal
 			if statut == 'menu0' :
 				if entree_util == '1' :
-					statut = self.menu1(self.taille_page_catego, self.page_catego)
+					statut = self.menu1()
 				elif entree_util == '2':
-					self.menu5(self.taille_page_favo, self.page_favo)
+					statut = self.menu6()
 				elif entree_util == 'q':
 					statut = 'off'
 				else:
 					statut = self.menu0()
 
-			# L"application se trouve au menu 1
+			# L'application se trouve au menu des catégories
 			elif statut == 'menu1':
 
 				# sélection page suivante
 				if entree_util == 's' :
+
+					# Si le reste de la division du nombre de categories dans la base
+					# par la taille de la page est nul alors le nombre de page des catégories
+					# est la division du nombre de categories dans la base  par la taille de la page.
+					# Sinon le nombre de page des catégories est (la division du nombre de categories 
+					# dans la base  par la taille de la page) + 1 .
 					if ( self.lignes_cat_bd % self.taille_page_catego ) == 0 :
 						if self.page_catego < ( self.lignes_cat_bd // self.taille_page_catego ) :
 							self.page_catego += 1
-							print( '------------------>   ',self.page_catego )
-						statut = self.menu1(self.taille_page_catego, self.page_catego)
+						statut = self.menu1()
 					elif ( self.lignes_cat_bd % self.taille_page_catego ) > 0 :
 						if self.page_catego < ((self.lignes_cat_bd // self.taille_page_catego) + 1) :
 							self.page_catego += 1
-							print( '------------------>   ',self.page_catego )
-						statut = self.menu1(self.taille_page_catego, self.page_catego)
+						statut = self.menu1()
 
 				# sélection page précédente
 				elif entree_util == 'p' :
 					if self.page_catego > 1:
 						self.page_catego -= 1
-					statut = self.menu1(self.taille_page_catego, self.page_catego)
+					statut = self.menu1()
 
 				# sélection menu précédent
 				elif entree_util == 'mp':
 					statut = self.menu0()
+					self.page_catego = 1
 
 				# sélection quitter l'application
 				elif entree_util == 'q':
 					statut = 'off'
 
+				# sélection d'un autre choix
+				else:
+
+					# sélection d'une catégorie
+					try:
+
+						# L'élément sélectionné est un nombre
+						page_ask = int(entree_util)
+						list_entree_flash = []
+						for cat in self.list_catego_display:
+							list_entree_flash.append(cat['selection'])
+
+						# L'élément sélectionné est un nombre des sélections affichés
+						if page_ask in list_entree_flash :
+							for cat in self.list_catego_display:
+								if page_ask == cat['selection'] :
+									self.category_cursor = cat
+							statut = self.menu2()
+
+						# L'élément sélectionné est un nombre de selections non affichées
+						else:
+							statut = self.menu1()
+
+					# sélection non repertoriée
+					except :
+						statut = self.menu1()
+
+			# L'application se trouve au menu des produits
+			elif statut == 'menu2':
+
+				# sélection page suivante
+				if entree_util == 's' :
+					if ( self.lignes_prod_cat_bd % self.taille_page_produ ) == 0 :
+						if self.page_produ < ( self.lignes_prod_cat_bd // self.taille_page_produ ) :
+							self.page_produ += 1
+							print( '------------------>   ',self.page_produ )
+						statut = self.menu2()
+					elif ( self.lignes_prod_cat_bd % self.taille_page_produ ) > 0 :
+						if self.page_produ < ((self.lignes_prod_cat_bd // self.taille_page_produ) + 1) :
+							self.page_produ += 1
+							print( '------------------>   ',self.page_produ )
+						statut = self.menu2()
+
+				# sélection page précédente
+				elif entree_util == 'p' :
+					if self.page_produ > 1:
+						self.page_produ -= 1
+					statut = self.menu2()
+
+				# sélection menu précédent
+				elif entree_util == 'mp':
+					statut = self.menu1()
+					self.page_produ = 1
+
+				# sélection quitter l'application
+				elif entree_util == 'q':
+					statut = 'off'
+
+				# sélection d'un autre choix
+				else:
+					try:
+						page_ask = int(entree_util)
+						list_entree_flash = []
+						for prod in self.list_produ_display:
+							list_entree_flash.append(prod['selection'])
+						if page_ask in list_entree_flash :
+							for prod in self.list_produ_display:
+								if page_ask == prod['selection'] :
+									self.product_cursor = prod
+							statut = self.menu3()
+						else:
+							statut = self.menu2()
+					except :
+						statut = self.menu2()
+
+			# L'application se trouve au menu des substituts
+			elif statut == 'menu3':
+
+				# sélection page suivante
+				if entree_util == 's' :
+					if ( self.lignes_subst_prod_cat_bd % self.taille_page_subst ) == 0 :
+						if self.page_subst < ( self.lignes_subst_prod_cat_bd // self.taille_page_subst ) :
+							self.page_subst += 1
+							print( '------------------>   ',self.page_subst )
+						statut = self.menu3()
+					elif ( self.lignes_subst_prod_cat_bd % self.taille_page_subst ) > 0 :
+						if self.page_subst < ((self.lignes_subst_prod_cat_bd // self.taille_page_subst) + 1) :
+							self.page_subst += 1
+							print( '------------------>   ',self.page_subst )
+						statut = self.menu3()
+
+				# sélection page précédente
+				elif entree_util == 'p' :
+					if self.page_subst > 1:
+						self.page_subst -= 1
+					statut = self.menu3()
+
+				# sélection menu précédent
+				elif entree_util == 'mp':
+					statut = self.menu2()
+					self.page_subst = 1
+
+				# sélection quitter l'application
+				elif entree_util == 'q':
+					statut = 'off'
+
+				# sélection d'une catégorie
 				else:
 
 					# sélection d'une catégorie
@@ -146,284 +235,233 @@ class MonApplication:
 						page_ask = int(entree_util)
 
 						list_entree_flash = []
-						for cat in self.list_catego_display:
-							list_entree_flash.append(cat['selection'])
+						for subs in self.list_subst_display:
+							list_entree_flash.append(subs['selection'])
 
 						if page_ask in list_entree_flash :
-
-							for cat in self.list_catego_display:
-								if page_ask == cat['selection'] :
-									self.category_cursor = cat
-							#print(self.ids_prods_to_list_ids_prod(find_cat['ids_prods']))
-							statut = self.menu2(self.taille_page_produ, self.page_produ, self.ids_prods_to_list_ids_prod(self.category_cursor['ids_prods']))
-
-
-
-					# sélection non repertoriée
-					except :
-						
-						statut = self.menu1(self.taille_page_catego, self.page_catego)
-
-
-			elif statut == 'menu2':
-				if entree_util == 's' :
-
-					if ( self.lignes_prod_cat_bd % self.taille_page_produ ) == 0 :
-						if self.page_produ < ( self.lignes_prod_cat_bd // self.taille_page_produ ) :
-							self.page_produ += 1
-							print( '------------------>   ',self.page_produ )
-						statut = self.menu2(self.taille_page_produ, self.page_produ, self.ids_prods_to_list_ids_prod(self.category_cursor['ids_prods']))
-					elif ( self.lignes_prod_cat_bd % self.taille_page_produ ) > 0 :
-						if self.page_produ < ((self.lignes_prod_cat_bd // self.taille_page_produ) + 1) :
-							self.page_produ += 1
-							print( '------------------>   ',self.page_produ )
-						statut = self.menu2(self.taille_page_produ, self.page_produ, self.ids_prods_to_list_ids_prod(self.category_cursor['ids_prods']))
-
-				elif entree_util == 'p' :
-
-					if self.page_produ > 1:
-						self.page_produ -= 1
-					statut = self.menu2(self.taille_page_produ, self.page_produ, self.ids_prods_to_list_ids_prod(self.category_cursor['ids_prods']))
-
-
-					
-				elif entree_util == 'mp':
-					statut = self.menu1(self.taille_page_catego, self.page_catego)
-
-				elif entree_util == 'q':
-					statut = 'off'
-
-				else:
-					try:
-						page_ask = int(entree_util)
-
-						list_entree_flash = []
-						for prod in self.list_produ_display:
-							list_entree_flash.append(prod['selection'])
-
-						if page_ask in list_entree_flash :
-							for prod in self.list_produ_display:
-								if page_ask == prod['selection'] :
-									self.product_cursor = prod
-							#statut = self.menu2(self.taille_page_produ, self.page_produ, self.ids_prods_to_list_ids_prod(self.category_cursor['ids_prods']))
+							for subs in self.list_subst_display:
+								if page_ask == subs['selection'] :
+									self.substitut_cursor = subs
+							statut = self.menu4()
+						else:
 							statut = self.menu3()
 
 					except :
-						statut = self.menu2(self.taille_page_produ, self.page_produ, self.ids_prods_to_list_ids_prod(self.category_cursor['ids_prods']))
+						statut = self.menu3()
 
+			# L'application se trouve au menu de la comparaison du produit et du substitut séléctionné
+			elif statut == 'menu4':
 
-			elif statut == 'menu3':
-				if entree_util == 's' :
+				# sélection menu précédent
+				if entree_util == 'mp':
 					statut = self.menu3()
-				elif entree_util == 'p' :
-					statut = self.menu3()
-				elif entree_util == 'mp':
-					statut = self.menu2(self.taille_page_produ, self.page_produ, self.ids_prods_to_list_ids_prod(self.category_cursor['ids_prods']))
-				elif entree_util == 'e_r' :
-					self.menu4()
+
+				# sélection enregistrement
+				elif entree_util == 'e':
+					statut = self.menu5()
+
+				# sélection quitter l'application
 				elif entree_util == 'q':
 					statut = 'off'
+
+				# autre sélection
 				else:
-					statut = self.menu3()
+					statut = self.menu4()
 
-			elif statut == 'menu4':
-				if entree_util == 'mp':
-					self.menu3(taille_pag_sub, taille_pag_sub)
-				elif entree_util == 'q':
-					pass
-
+			# L'application se trouve au menu de la confirmation des enregistrements( ou message déja enregistré )
 			elif statut == 'menu5':
-				if entree_util == 's' :
-					self.menu5(taille_pag_fav, numero_page_fav)
-				elif entree_util == 'p' :
-					self.menu5(taille_pag_fav, numero_page_fav)
-				elif entree_util == 'mp':
-					self.menu0()
+
+				# sélection du menu précédent
+				if entree_util == 'mp':
+					statut = self.menu4()
+
+				# sélection quitter l'application
 				elif entree_util == 'q':
-					pass
+					statut = 'off'
+
+				# autre sélection
 				else:
+					statut = self.menu5()
+
+			# L'application se trouve au menu des favoris
+			elif statut == 'menu6':
+
+				# sélection page suivante
+				if entree_util == 's' :
+					if ( self.lignes_fav_bd % self.taille_page_favo ) == 0 :
+						if self.page_favo < ( self.lignes_fav_bd // self.taille_page_favo ):
+							self.page_favo += 1
+						statut = self.menu6()
+					elif ( self.lignes_fav_bd % self.taille_page_favo ) > 0 :
+						if self.page_favo < ((self.lignes_fav_bd // self.taille_page_favo) + 1) :
+							self.page_favo += 1
+						statut = self.menu6()
+
+				# sélection page précédente
+				elif entree_util == 'p' :
+					if self.page_subst > 1:
+						self.page_subst -= 1
+					statut = self.menu6()
+
+				# sélection du menu précédent
+				elif entree_util == 'mp':
+					self.page_favo = 1
+					statut = self.menu0()
+
+				# sélection quitter l'application
+				elif entree_util == 'q':
+					statut = 'off'
+
+				# sélection d'une catégorie
+				else:
+					# sélection d'une catégorie
 					try:
 						page_ask = int(entree_util)
-						self.menu6(id_fav)
+						list_entree_flash = []
+						for fav in self.list_favo_display:
+							list_entree_flash.append(fav['selection'])
+						if page_ask in list_entree_flash :
+							for fav in self.list_favo_display:
+								if page_ask == fav['selection'] :
+									self.favori_cursor = fav
+									print(self.favori_cursor)
+							statut = self.menu7()
+						else:
+							statut = self.menu6()
+
 					except :
-						self.menu5(taille_pag_fav, numero_page_fav)
+						statut = self.menu6()
 
+			# L'application se trouve au menu de la comparaison du produit et du substitut enregistré
+			elif statut == 'menu7':
 
-			elif statut == 'menu6':
-				if entree_util == 's' :
-					pass
-				elif entree_util == 'p' :
-					pass
-				elif entree_util == 'mp':
-					self.menu5(taille_pag_fav, numero_page_fav)
+				# sélection menu précédent
+				if entree_util == 'mp':
+					statut = self.menu6()
+
+				# sélection quitter l'application
 				elif entree_util == 'q':
-					pass
-				else:
-					pass
+					statut = 'off'
 
-		
+				# autre selection
+				else:
+					statut = self.menu7()
+
+
 
 	def menu0(self):
-		
+
+		print('__________\nmenu0    |\n_________|')
 		print( '1\n Rechercher des substituts\n--------------\n2\nConlter les favoris' )
-		#entree_util = input('Entrez une sélection : ')
-
-		#while entree_util not in ['1','2'] :
-		#	print( '1\n Rechercher des substituts\n--------------\n2\nConlter les favoris' )
-		#	entree_util = input('Entrez une sélection : ')
-
-		#self.distributeur_menu('menu0', entree_util)
-
 		return('menu0')
 
 
-	def menu1(self, taille_pag_cat, numero_page_cat):
+	def menu1(self):
 		
-		cnx = mysql.connector.connect(user='p5_user', password='motdepasse', database='p5_0')
-		cursor = cnx.cursor()
-
-		query = ("SELECT nom, id_produits FROM Categories ORDER BY nom LIMIT " + str(self.taille_page_catego) + " OFFSET " + str((self.page_catego - 1)*self.taille_page_catego))
-		cursor.execute(query)
-
-		result = cursor.fetchall()
-
+		categories = self.gest_categories.get_categories_size_page(self.taille_page_catego, self.page_catego)
+		print('\n__________\nmenu1    |\n_________|\n')
+		self.lignes_cat_bd = categories[1][0][0]
 		self.list_catego_display = []
-		catego_display = { 'selection':'' , 'nom':'' , 'ids_prods':'' }
-
-		for i in result:
-
-			catego_display['selection'] =  result.index(i) + ((self.page_catego-1)*self.taille_page_catego) 
-			catego_display['nom'] = i[0]
-			catego_display['ids_prods'] = i[1]
-
+		catego_display = { 'selection':'' , 'id':'' ,'nom':'' , 'ids_prods':'' }
+		for i in categories[0]:
+			catego_display['selection'] =  categories[0].index(i) + ((self.page_catego-1)*self.taille_page_catego) 
+			catego_display['id'] = i[0]
+			catego_display['nom'] = i[1]
+			catego_display['ids_prods'] = i[2]
 			self.list_catego_display.append(catego_display)
 			catego_display = { 'selection':'' , 'nom':'' , 'ids_prods':'' }
-
-			print( result.index(i) + ((self.page_catego-1)*self.taille_page_catego) , '--' ,i[0] )
-
-		#print('liste catego display\n', self.list_catego_display )
-
-
-
-
-		#print(result)
-
-		cursor.close()
-		cnx.close()
-
-		#entree_util = input('Entrez une sélection cat : ')
-
-		#self.distributeur_menu('menu1', entree_util)
-
+			print( categories[0].index(i) + ((self.page_catego-1)*self.taille_page_catego) , '--' ,i[1] )
 		return('menu1')
 
 
 
+	def menu2(self):
 
-
-	def menu2(self, taille_pag_prod, numero_page_prod, list_ids_prods):
-		
-		cnx = mysql.connector.connect(user='p5_user', password='motdepasse', database='p5_0')
-		cursor = cnx.cursor()
-
-		query = ("SELECT id, nom, quantite, marque, nutriscore FROM Produits WHERE id IN " + str(tuple(list_ids_prods)) + " ORDER BY nom LIMIT " + str(taille_pag_prod) + " OFFSET " + str((numero_page_prod - 1)*taille_pag_prod ))
-		query_count = ("SELECT COUNT(*) FROM Produits WHERE id IN " + str(tuple(list_ids_prods)))
-		#print( 'tuuuuuuuuuuple\n', str(tuple(list_ids_prods)) )
-
-		cursor.execute(query)
-		result = cursor.fetchall()
-
-		cursor.execute(query_count)
-		result_count = cursor.fetchall()
-		self.lignes_prod_cat_bd = result_count[0][0]
-
-
+		produits = self.gest_produits.get_produits_size_page(self.category_cursor['id'], self.taille_page_produ, self.page_produ)
+		self.lignes_prod_cat_bd = produits[1][0][0]
 		self.list_produ_display = []
 		prod_display = { 'selection':'', 'nutriscore':'', 'id':'' }
-
-		for i in result:
-
-			prod_display['selection'] = result.index(i) + ((self.page_produ-1)*self.taille_page_produ)
+		print('__________\nmenu2    |\n_________|')
+		for i in produits[0]:
+			prod_display['selection'] = produits[0].index(i) + ((self.page_produ-1)*self.taille_page_produ)
 			prod_display['nutriscore'] = i[4]
 			prod_display['id'] = i[0]
-
 			self.list_produ_display.append(prod_display)
 			prod_display = { 'selection':'', 'nutriscore':'', 'id':'' }
-
-			print(result.index(i) + ((self.page_produ-1)*self.taille_page_produ) , '--' , i)
-
-
-		cursor.close()
-		cnx.close()
+			print(produits[0].index(i) + ((self.page_produ-1)*self.taille_page_produ) , '--' , i)
 		return('menu2')
-
-
-
-
 
 
 
 
 	def menu3(self):
 
-
-		cnx = mysql.connector.connect(user='p5_user', password='motdepasse', database='p5_0')
-		cursor = cnx.cursor()
-
-
-		query = ("SELECT nom, quantite, marque, labels, ingredients, produits_provoqu_allergies, traces_eventuelles, nova, nutriscore, infos_nutritions FROM Produits WHERE nutriscore <= " + '\'' + self.product_cursor['nutriscore'] + '\'' + " ORDER BY nutriscore LIMIT " + str(self.nombre_substituts) + " OFFSET 0")
-		query_mag = ("SELECT nom FROM Magasins WHERE id_produits LIKE '%-" + self.product_cursor['id'] + "-%'")
-
-		#query_mag = ("SELECT nom FROM Magasins WHERE id_produits LIKE '%-" + 'a' + "-%'")
-		print(query_mag)
-		print(self.product_cursor['id'])
-
-
-
-		cursor.execute(query)
-		result = cursor.fetchall()
-
-		cursor.execute(query_mag)
-		result_mag = cursor.fetchall()
-
-		mags = ''
-
-		for i in result_mag:
-			print(i)
-		print('m3')
-
-
-		#for i in result:
-
-		#	print(result.index(i) , '--' , i)
-
-
-		cursor.close()
-		cnx.close()
-
-		print('m3_0')
-
+		substituts = self.gest_produits.get_substitus_prod(self.category_cursor['id'], self.product_cursor['nutriscore'], self.taille_page_subst, self.page_subst)
+		self.lignes_subst_prod_cat_bd = substituts[1][0][0]
+		print('\n__________\nmenu3    |\n_________|\n')
+		self.list_subst_display = []
+		for i in substituts[0]:
+			magasins = self.gest_magasins.get_magasins_prod( self.nombre_magasin, self.product_cursor['id'])
+			self.list_subst_display.append( { 'selection':substituts[0].index(i) + ((self.page_produ-1)*self.taille_page_produ), 'id':i[0] } )
+			print('___________________________________\n', substituts[0].index(i) + ((self.page_produ-1)*self.taille_page_produ), '\n')
+			print(' substitut ---> ', i,'\n' , 'Magasins  :')
+			for mag in magasins[0]:
+				print(mag)
 		return('menu3')
 
 
 
 
 
-
-
-
-
-
-
 	def menu4(self):
-		
+
+		produits = self.gest_produits.get_informations_produits(self.substitut_cursor['id'])
+		print('\n__________\nmenu4    |\n_________|\n')
+		print( 'substitut_cursor : ' , self.substitut_cursor )
+		print('résultat : \n')
+		for info in produits[0][0]:
+			print(info)
 		return('menu4')
 
-	def menu5(self, arg):
-		
+
+
+
+
+	def menu5(self):
+
+		check_fav = self.gest_favoris.check_in_fav( self.product_cursor['id'],  self.substitut_cursor['id'])
+		print('\n__________\nmenu5    |\n_________|\n')
+		if check_fav[0] == []:
+			self.gest_favoris.add_in_fav( self.product_cursor['id'],  self.substitut_cursor['id'])
+			print('\nSubstitut enregistré dans vos favoris\n')
+		else:
+			print('\nCet enregistrement est déjà dans vos favoris\n')
 		return('menu5')
 
+
+
 	def menu6(self):
-		
+
+		favoris =  self.gest_favoris.get_ids_favoris_size_page(self.taille_page_favo, self.page_favo)
+		print('\n__________\nmenu6    |\n_________|\n')
+		for i in favoris[0]:
+			self.list_favo_display.append( { 'selection':favoris[0].index(i) + (self.page_favo-1)*self.taille_page_favo , 'id_prod':i[0], 'id_subs':i[1] } )
+			print( '________________________\nsélection  : ' , favoris[0].index(i) + ((self.page_favo-1)*self.taille_page_favo), '\n')
+			produit_substitue = self.gest_favoris.get_name_prod(i[0])
+			substitut = self.gest_favoris.get_name_prod(i[1])
+			print(produit_substitue[0][1], '         subestitué par           ',substitut[0][1])
 		return('menu6')
+
+
+
+
+
+	def menu7(self):
+
+		infos_prods_substitue = self.gest_favoris.get_all_infos_prod(self.favori_cursor['id_prod'])
+		infos_substitut = self.gest_favoris.get_all_infos_prod(self.favori_cursor['id_subs'])
+		print('\n__________\nmenu7    |\n_________|\n')
+		print( 'Produit substitué :  \n', infos_prods_substitue[0][0], )
+		print( 'Substitut\n', infos_substitut[0][0])
+		return('menu7')
 

@@ -96,11 +96,20 @@ LIMIT taille_page_cat OFFSET (numero_page - 1)*taille_page_cat ;
 
 
 
-SELECT nom, quantite, marque, nutriscore
+SELECT id, nom, quantite, marque, nutriscore
 FROM Produits
-WHERE id IN tableau_ids_produits
+INNER JOIN 
+    ON Produits.id = Join_categories_produits.id_produit
+WHERE Join_categories_produits.id_produit = id_de_la_categorie
 ORDER BY nom
-LIMIT taille_page_prod OFFSET (numero_page - 1)*taille_page_prod ;
+LIMIT taille_page_prod OFFSET (numero_page - 1)*taille_page_prod;
+-- jiontures
+
+SELECT id, nom, quantite, marque, nutriscore
+FROM Produits
+WHERE id IN
+    (SELECT id_produit FROM Join_categories_produits WHERE id_categorie = id_de_la_categorie );
+-- sous requetes
 
 --		Recherche des produits correspondant à la demande de l’utilisteur
 
@@ -129,6 +138,17 @@ SELECT nom FROM Magasins WHERE id_produits LIKE '%-idprod-%'
 
 INSERT INTO Favoris ( id_produit, id_resultats, date_enregistrement )
 VALUES ( id_prod, id_results, NOW() )
+
+
+
+
+IF ( produit_substitue, produit_substitut ) IN ( SELECT id_produit, id_substitut FROM Produits )
+       SELECT 'deja_dans_labase'
+ELSE
+       SELECT 'pas_dans_la_base'
+
+
+
 
 --		Enregistrement d'une recherche
 
