@@ -13,7 +13,7 @@ class ProduitTables:
 	"""docstring for ProduitTables"""
 
 	def __init__(self):
-		print('')
+		pass
 
 
 	def insert_rows_prod(self, obj_cat):
