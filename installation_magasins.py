@@ -9,7 +9,7 @@ class InstallationMagasins:
 	def __init__(self):
 		pass
 
-	def installation_table(self):
+	def create_table_mag(self):
 		
 		cnx = mysql.connector.connect(user='p5_user', password='motdepasse', database='p5_0')
 		cursor = cnx.cursor()
@@ -18,4 +18,22 @@ class InstallationMagasins:
 		cnx.commit()
 		cursor.close()
 		cnx.close()
+
+
+	def insert_rows_mag(self, telech_mag):
+
+		# build des lignes à insérer dans les lignes de la table de jointure magasin produits
+		data_mag_to_insert = []
+		for mag in telech_mag.lignes_mag:
+			data_mag_to_insert.append( ( mag['id'], mag['nom'] ) )
+		cnx = mysql.connector.connect(user='p5_user', password='motdepasse', database='p5_0')
+		cursor = cnx.cursor()
+		add_mags = "INSERT INTO Magasins VALUES (%s, %s)"
+		cursor.executemany(add_mags, data_mag_to_insert)
+		cnx.commit()
+		cursor.close()
+		cnx.close()
+		print('insertion magasins : ok')
+
+
 		

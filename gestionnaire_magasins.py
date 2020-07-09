@@ -19,7 +19,7 @@ class GestionnaireMagasins:
 		
 		cnx = mysql.connector.connect(user='p5_user', password='motdepasse', database='p5_0')
 		cursor = cnx.cursor()
-		query = "SELECT nom FROM Magasins WHERE id IN (SELECT id_magasin FROM Join_magasins_produits WHERE id_produit = '" + id_produit + "' )" + " ORDER BY nom LIMIT " + str(nombre_magasins) + " OFFSET 0"
+		query = "SELECT nom FROM Magasins WHERE id IN (SELECT id_magasin FROM Magasins_produits WHERE id_produit = '" + id_produit + "' )" + " ORDER BY nom LIMIT " + str(nombre_magasins) + " OFFSET 0"
 		cursor.execute(query)
 		result = cursor.fetchall()
 		cursor.close()

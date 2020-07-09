@@ -19,7 +19,7 @@ class GestionnaireCategories:
 		
 		cnx = mysql.connector.connect(user='p5_user', password='motdepasse', database='p5_0')
 		cursor = cnx.cursor()
-		query = ("SELECT id, nom, id_produits FROM Categories ORDER BY nom LIMIT " + str(taille_page_catego) + " OFFSET " + str((page_catego - 1)*taille_page_catego))
+		query = ("SELECT id, nom FROM Categories ORDER BY nom LIMIT " + str(taille_page_catego) + " OFFSET " + str((page_catego - 1)*taille_page_catego))
 		query_count = ("SELECT COUNT(*) FROM Categories")
 		cursor.execute(query)
 		result = cursor.fetchall()

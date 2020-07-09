@@ -1,19 +1,16 @@
 
 
-import gestionnaire_categories
-import gestionnaire_produits
-import gestionnaire_magasins
-import gestionnaire_favoris
-
-
-
 
 from datetime import datetime
 
 import mysql.connector
 
 
-
+import gestionnaire_categories
+import gestionnaire_produits
+import gestionnaire_magasins
+import gestionnaire_favoris
+import config
 
 
 
@@ -38,18 +35,18 @@ class MonApplication:
 		self.lignes_fav_bd = 0
 
 		# configurations
-		self.nombre_substituts = 10
-		self.nombre_magasin = 5
-		
-		self.page_catego = 1
-		self.page_produ = 1
-		self.page_subst = 1
-		self.page_favo = 1
+		self.nombre_substituts = config.NOMBRE_SUBSTITUS
+		self.nombre_magasin = config.NOMBRE_MAGASINS
 
-		self.taille_page_catego = 10
-		self.taille_page_produ = 10
-		self.taille_page_subst = 10
-		self.taille_page_favo = 10
+		self.page_catego = config.PAGE_CATEGORIES
+		self.page_produ = config.PAGE_PRODUITS
+		self.page_subst = config.PAGE_SUBSTITUTS
+		self.page_favo = config.PAGE_FAVORIS
+		
+		self.taille_page_catego = config.TAILLE_PAGE_CATEGORIES 
+		self.taille_page_produ = config.TAILLE_PAGE_PRODUITS 
+		self.taille_page_subst = config.TAILLE_PAGE_SUBSTITUTS
+		self.taille_page_favo = config.TAILLE_PAGE_FAVORIS 
 
 		# les élements affichés
 		self.list_catego_display = []
@@ -367,7 +364,6 @@ class MonApplication:
 			catego_display['selection'] =  categories[0].index(i) + ((self.page_catego-1)*self.taille_page_catego) 
 			catego_display['id'] = i[0]
 			catego_display['nom'] = i[1]
-			catego_display['ids_prods'] = i[2]
 			self.list_catego_display.append(catego_display)
 			catego_display = { 'selection':'' , 'nom':'' , 'ids_prods':'' }
 			print( categories[0].index(i) + ((self.page_catego-1)*self.taille_page_catego) , '--' ,i[1] )
