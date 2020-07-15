@@ -1,58 +1,27 @@
-
-
-
+"""
+Ce module est chargé de la création de la table et de l'insertion des catégories
+"""
 
 import mysql.connector
 
 
-
-
-
-
 class InstallationCategories:
+    """ Cette classe est la classe des objets chargés de la création de la table et de l'insertion des catégories """
 
-	"""docstring for InstallationCategories"""
+    def __init__(self):
+        pass
 
-	def __init__(self):
-		pass
+    def create_table_cat(self, cursor, cnx):
+        """ Cette méthode permet la création de la table des catégories """
 
+        create_table_cat = "CREATE TABLE Categories (id SMALLINT UNSIGNED NOT NULL AUTO_INCREMENT, nom VARCHAR(255) NOT NULL, PRIMARY KEY (id) ) ENGINE=INNODB"
+        cursor.execute(create_table_cat)
+        cnx.commit()
 
-	def create_table_cat(self):
+    def insert_rows_cat(self, validation, cursor, cnx):
+        """ Cette méthode permet l'insertion des catégories """
 
-		cnx = mysql.connector.connect(user='p5_user', password='motdepasse', database='p5_0')
-		cursor = cnx.cursor()
-		create_table_cat = "CREATE TABLE Categories (id VARCHAR(255) NOT NULL, nom VARCHAR(255) NOT NULL, PRIMARY KEY (id) ) ENGINE=INNODB"
-		cursor.execute(create_table_cat)
-		cnx.commit()
-		cursor.close()
-		cnx.close()
-
-
-
-	def insert_rows_cat(self, telech_cat):
-
-		datas_to_insert = []
-		for cat in telech_cat.colonnes_cat:
-			datas_to_insert.append( ( cat['id'], cat['name'] ) )
-		cnx = mysql.connector.connect(user='p5_user', password='motdepasse', database='p5_0')
-		cursor = cnx.cursor()
-		add_cat = "INSERT INTO Categories VALUES (%s, %s)"
-		cursor.executemany(add_cat, datas_to_insert)
-		cnx.commit()
-		cursor.close()
-		cnx.close()
-		print('Insertion catégories : ok')
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+        add_cat = "INSERT INTO Categories (nom) VALUES (%s)"
+        cursor.executemany(add_cat, validation.colonnes_cats)
+        cnx.commit()
+        print("Insertion catégories : ok")

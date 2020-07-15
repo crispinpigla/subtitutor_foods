@@ -1,52 +1,28 @@
-
-
+"""
+Ce module est chargé de la création de la table et de l'insertion des catégories-produits
+"""
 
 
 import mysql.connector
 
 
-
 class InstallationCategoriesProduits:
-	"""docstring for InstallationCategoriesProduits"""
-	def __init__(self):
-		pass
+    """ Cette classe est la classe des objets chargés de la création de la table et de l'insertion des catégories-produits """
 
-	def create_table_cat_prod(self):
-		
-		cnx = mysql.connector.connect(user='p5_user', password='motdepasse', database='p5_0')
-		cursor = cnx.cursor()
-		create_table_cat_prod = "CREATE TABLE Categories_produits ( id_categorie VARCHAR(255), id_produit VARCHAR(255) ) ENGINE=INNODB"
-		cursor.execute(create_table_cat_prod)
-		cnx.commit()
-		cursor.close()
-		cnx.close()
-		
+    def __init__(self):
+        pass
 
-	def insert_rows_cat_prod(self, cat_obj):
+    def create_table_cat_prod(self, cursor, cnx):
+        """ Cette méthode permet la création de la table des catégories-produits """
 
-		data_to_insert = []
-		for cat in cat_obj.colonnes_cat_prod:
-			for prod in cat_obj.colonnes_cat_prod[cat]:
-				data_to_insert.append( (cat,prod) )
-			print( 'build des cat_prods : ', list(cat_obj.colonnes_cat_prod).index(cat), '/', len(cat_obj.colonnes_cat_prod) )
-		cnx = mysql.connector.connect(user='p5_user', password='motdepasse', database='p5_0')
-		cursor = cnx.cursor()
-		data_to_insert = []
-		for cat in cat_obj.colonnes_cat_prod:
-			for prod in cat_obj.colonnes_cat_prod[cat]:
-				data_to_insert.append( (cat,prod) )
-		add_cat_prod = "INSERT INTO Categories_produits (id_categorie, id_produit) VALUES (%s, %s)"
-		cursor.executemany(add_cat_prod, data_to_insert)
-		cnx.commit()
-		cursor.close()
-		cnx.close()
-		print('insertion join_cat_prod : ok')
+        create_table_cat_prod = "CREATE TABLE Categories_produits ( nom_categorie VARCHAR(255) NOT NULL, id_produit BIGINT UNSIGNED NOT NULL ) ENGINE=INNODB"
+        cursor.execute(create_table_cat_prod)
+        cnx.commit()
 
+    def insert_rows_cat_prod(self, validation, cursor, cnx):
+        """ Cette méthode permet l'insertion des catégories-produits """
 
-
-
-
-
-
-
-
+        add_cat_prod = "INSERT INTO Categories_produits (id_produit, nom_categorie) VALUES (%s, %s)"
+        cursor.executemany(add_cat_prod, validation.colonnes_prods_cats)
+        cnx.commit()
+        print("insertion join_cat_prod : ok")

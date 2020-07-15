@@ -1,30 +1,23 @@
-
-
-
-
-
-
-
-
+import mysql.connector
 
 import requests
 import json
 
 
-
-request_mag_open_ff = requests.get('https://fr.openfoodfacts.org/magasins.json')
-request_mag_open_ff = json.loads(request_mag_open_ff.text)
-
-
-
-
-for i in request_mag_open_ff['tags']:
-	print(i)
-
-
-
-print(len(request_mag_open_ff['tags']))
-
-
-
-
+cnx = mysql.connector.connect(user="p5_user", password="motdepasse", database="p5_0")
+cursor = cnx.cursor()
+drop_table_0 = "DROP TABLE Favoris"
+drop_table_1 = "DROP TABLE Categories"
+drop_table_2 = "DROP TABLE Categories_produits"
+drop_table_3 = "DROP TABLE Magasins"
+drop_table_4 = "DROP TABLE Magasins_produits"
+drop_table_5 = "DROP TABLE Produits"
+cursor.execute(drop_table_0)
+cursor.execute(drop_table_1)
+cursor.execute(drop_table_2)
+cursor.execute(drop_table_3)
+cursor.execute(drop_table_4)
+cursor.execute(drop_table_5)
+cnx.commit()
+cursor.close()
+cnx.close()

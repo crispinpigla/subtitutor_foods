@@ -1,40 +1,28 @@
-
-
 import requests
 import json
+import mysql.connector
 
-
-import telecharg_categories_tables
-import telecharg_produits_tables
-import telecharg_magasins_table
-import favoris_table
-
-
-import tri_produits
-
+import telechargement
+import validations
 import installation_categories
 import installation_magasins
 import installation_produits
 import installation_favoris
 import installation_categories_produits
 import installation_magasins_produits
-
 import monappli
+
+cnx = mysql.connector.connect(user="p5_user", password="motdepasse", database="p5_0")
+cursor = cnx.cursor()
 
 """
 # Téléchargement des données de l'api
-telech_cat_table = telecharg_categories_tables.TelechargeCategoriesTables()
-telech_prod_table = telecharg_produits_tables.TelechargeProduitTables()
-telech_mag_table = telecharg_magasins_table.TelechargeMagasinsTables()
+telechargement0 = telechargement.Telechargement()
+telechargement0.get_prod_from_api()
 
-# Constrution des données à insérer dans la base
-telech_cat_table.build_rows_cat()
-telech_prod_table.build_rows_prod(telech_cat_table)
-telech_mag_table.build_rows_mag()
-
-# Filtrage des produits n'ayant pas de nutriscore
-tri_prod = tri_produits.TriProduits()
-tri_prod.tri_prod(telech_prod_table.colonnes_prods_non_trie)
+# Constrution et filtrage des données à insérer dans la base
+validation0 = validations.Validations()
+validation0.tri_build(telechargement0)
 
 # Création des installateurs
 installation_categories0 = installation_categories.InstallationCategories()
@@ -45,20 +33,24 @@ installation_categories_produits0 = installation_categories_produits.Installatio
 installation_magasins_produits0 = installation_magasins_produits.InstallationMagasinsProduits()
 
 # Création des tables
-installation_categories0.create_table_cat()
-installation_produit0.create_table_prod()
-installation_magasins0.create_table_mag()
-installation_favoris0.create_table_fav()
-installation_categories_produits0.create_table_cat_prod()
-installation_magasins_produits0.create_table_mag_prod()
+installation_categories0.create_table_cat(cursor,cnx)
+installation_produit0.create_table_prod(cursor,cnx)
+installation_magasins0.create_table_mag(cursor,cnx)
+installation_favoris0.create_table_fav(cursor,cnx)
+installation_categories_produits0.create_table_cat_prod(cursor,cnx)
+installation_magasins_produits0.create_table_mag_prod(cursor,cnx)
 
 # Insertion des données dans la table
-installation_categories0.insert_rows_cat(telech_cat_table)
-installation_produit0.insert_rows_prod(tri_prod)
-installation_magasins0.insert_rows_mag(telech_mag_table)
-installation_categories_produits0.insert_rows_cat_prod(telech_cat_table)
-installation_magasins_produits0.insert_rows_mag_prod(telech_mag_table)
+installation_categories0.insert_rows_cat(validation0,cursor,cnx)
+installation_produit0.insert_rows_prod(validation0,cursor,cnx)
+installation_magasins0.insert_rows_mag(validation0,cursor,cnx)
+installation_categories_produits0.insert_rows_cat_prod(validation0,cursor,cnx)
+installation_magasins_produits0.insert_rows_mag_prod(validation0,cursor,cnx)
 """
 # Lancement de l'application
-monapp = monappli.MonApplication()
+monapp = monappli.MonApplication(cursor, cnx)
 monapp.distributeur_menu()
+
+
+cursor.close()
+cnx.close()

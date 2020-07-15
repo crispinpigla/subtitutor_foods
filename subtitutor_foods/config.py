@@ -1,9 +1,6 @@
-
-
-
-
-
-
+"""
+Ce module contient les constantes de l'application
+"""
 
 
 NOMBRE_SUBSTITUS = 10
