@@ -359,8 +359,8 @@ class MonApplication:
     def menu0(self):
         """ Cette méthode gère l'affichage du menu principal """
 
-        print("__________\nmenu0    |\n_________|")
-        print("1\n Rechercher des substituts\n--------------\n2\nConlter les favoris")
+        print("________________________\nMenu principal     \n________________________")
+        print("1\n\nRechercher des substituts\n---------------------------\n2\n\nConsulter les favoris\n---------------------------")
         return "menu0"
 
     def menu1(self):
@@ -369,7 +369,7 @@ class MonApplication:
         categories = self.gest_categories.get_categories_size_page(
             self.taille_page_catego, self.page_catego, self.curseur, self.connexion
         )
-        print("\n__________\nmenu1    |\n_________|\n")
+        print("________________________\nMenu des catégories     \n________________________")
         self.lignes_cat_bd = categories[1][0][0]
         self.list_catego_display = []
         catego_display = {"selection": "", "id": "", "nom": "", "ids_prods": ""}
@@ -402,7 +402,7 @@ class MonApplication:
         self.lignes_prod_cat_bd = produits[1][0][0]
         self.list_produ_display = []
         prod_display = {"selection": "", "nutriscore": "", "id": ""}
-        print("__________\nmenu2    |\n_________|")
+        print("________________________\nMenu des produits     \n________________________")
         for i in produits[0]:
             prod_display["selection"] = produits[0].index(i) + (
                 (self.page_produ - 1) * self.taille_page_produ
@@ -412,10 +412,13 @@ class MonApplication:
             self.list_produ_display.append(prod_display)
             prod_display = {"selection": "", "nutriscore": "", "id": ""}
             print(
-                produits[0].index(i) + ((self.page_produ - 1) * self.taille_page_produ),
-                "--",
-                i,
+                produits[0].index(i) + ((self.page_produ - 1) * self.taille_page_produ)
             )
+            print('Nom :', i[1])
+            print('Quantité :', i[2])
+            print('Marque :', i[3])
+            print('Nutriscore :', i[4])
+            print('---------------------------')
         return "menu2"
 
     def menu3(self):
@@ -430,7 +433,7 @@ class MonApplication:
             self.connexion,
         )
         self.lignes_subst_prod_cat_bd = substituts[1][0][0]
-        print("\n__________\nmenu3    |\n_________|\n")
+        print("________________________\nMenu des substituts     \n________________________")
         self.list_subst_display = []
         for i in substituts[0]:
             magasins = self.gest_magasins.get_magasins_prod(
@@ -447,14 +450,19 @@ class MonApplication:
                 }
             )
             print(
-                "___________________________________\n",
                 substituts[0].index(i)
-                + ((self.page_produ - 1) * self.taille_page_produ),
-                "\n",
+                + ((self.page_produ - 1) * self.taille_page_produ)
             )
-            print(" substitut ---> ", i, "\n", "Magasins  :")
+            print('Nom :', i[1])
+            print('Quantité :', i[2])
+            print('Marque :', i[3])
+            print('Nutriscore :', i[4])
+            mag_display = ''
             for mag in magasins[0]:
-                print(mag)
+                mag_display += mag[0] + ', '
+            mag_display = mag_display[:-2]
+            print("Magasins  : " + mag_display)
+            print('---------------------------')
         return "menu3"
 
     def menu4(self):
@@ -463,10 +471,29 @@ class MonApplication:
         produits = self.gest_produits.get_all_infos_prod(
             self.substitut_cursor["id"], self.curseur, self.connexion
         )
-        print("\n__________\nmenu4    |\n_________|\n")
-        print("substitut_cursor : ", self.substitut_cursor)
-        for info in produits[0][0]:
-            print(info)
+        print("________________________\nDétails du substitut     \n________________________")
+        print('Nom :', produits[0][0][1])
+        print('Quantité :', produits[0][0][2])
+        print('Marque :', produits[0][0][3])
+        print('Catégories :', produits[0][0][4])
+        print('Labels :', produits[0][0][5])
+        print('Ingrédients :', produits[0][0][6])
+        allergenes_display = ''
+        for allerg in produits[0][0][7][1:-1].split(','):
+        	if allerg[0] == ' ' :
+        		allerg = allerg[1:]
+        	allergenes_display += allerg[4:-1] + ', '
+        allergenes_display = allergenes_display[:-2]
+        print('Allergènes :', allergenes_display)
+        traces_display = ''
+        for trace in produits[0][0][8][1:-1].split(','):
+        	if trace[0] == ' ' :
+        		trace = trace[1:]
+        	traces_display += trace[4:-1] + ', '
+        traces_display = traces_display[:-2]
+        print("Substances susceptibles de provoquer des allergies à l'état de traces :", traces_display)
+        print('Nutriscore :', produits[0][0][9])
+        print('Lien Open Foods Facts :', produits[0][0][10])
 
         return "menu4"
 
@@ -479,7 +506,7 @@ class MonApplication:
             self.curseur,
             self.connexion,
         )
-        print("\n__________\nmenu5    |\n_________|\n")
+        print("________________________\nMenu d'enregistrement     \n________________________")
         if check_fav[0] == []:
             self.gest_favoris.add_in_fav(
                 self.product_cursor["id"],
@@ -499,7 +526,7 @@ class MonApplication:
         favoris = self.gest_favoris.get_ids_favoris_size_page(
             self.taille_page_favo, self.page_favo, self.curseur, self.connexion
         )
-        print("\n__________\nmenu6    |\n_________|\n")
+        print("________________________\nMenu des favoris     \n________________________")
         for i in favoris[0]:
             self.list_favo_display.append(
                 {
@@ -510,7 +537,6 @@ class MonApplication:
                 }
             )
             print(
-                "________________________\nsélection  : ",
                 favoris[0].index(i) + ((self.page_favo - 1) * self.taille_page_favo),
                 "\n",
             )
@@ -522,9 +548,10 @@ class MonApplication:
             )
             print(
                 produit_substitue[0][1],
-                "         subestitué par           ",
+                "       substitué par         ",
                 substitut[0][1],
             )
+            print('---------------------------')
 
         return "menu6"
 
@@ -537,7 +564,52 @@ class MonApplication:
         infos_substitut = self.gest_favoris.get_all_infos_prod(
             self.favori_cursor["id_subs"], self.curseur, self.connexion
         )
-        print("\n__________\nmenu7    |\n_________|\n")
-        print("Produit substitué :  \n", infos_prods_substitue[0][0])
-        print("Substitut\n", infos_substitut[0][0])
+        print("_____________________________\nMenu de détails du favori     \n_____________________________")
+        print("Produit substitué :")
+        print('Nom :', infos_prods_substitue[0][0][1])
+        print('Quantité :', infos_prods_substitue[0][0][2])
+        print('Marque :', infos_prods_substitue[0][0][3])
+        print('Catégories :', infos_prods_substitue[0][0][4])
+        print('Labels :', infos_prods_substitue[0][0][5])
+        print('Ingrédients :', infos_prods_substitue[0][0][6])
+        allergenes_display = ''
+        for allerg in infos_prods_substitue[0][0][7][1:-1].split(','):
+        	if allerg[0] == ' ' :
+        		allerg = allerg[1:]
+        	allergenes_display += allerg[4:-1] + ', '
+        allergenes_display = allergenes_display[:-2]
+        print('Allergènes :', allergenes_display)
+        traces_display = ''
+        for trace in infos_prods_substitue[0][0][8][1:-1].split(','):
+        	if trace[0] == ' ' :
+        		trace = trace[1:]
+        	traces_display += trace[4:-1] + ', '
+        traces_display = traces_display[:-2]
+        print("Substances susceptibles de provoquer des allergies à l'état de traces :", traces_display)
+        print('Nutriscore :', infos_prods_substitue[0][0][9])
+        print('Lien Open Foods Facts :', infos_prods_substitue[0][0][10])
+
+        print("\nSubstitut :")
+        print('Nom :', infos_substitut[0][0][1])
+        print('Quantité :', infos_substitut[0][0][2])
+        print('Marque :', infos_substitut[0][0][3])
+        print('Catégories :', infos_substitut[0][0][4])
+        print('Labels :', infos_substitut[0][0][5])
+        print('Ingrédients :', infos_substitut[0][0][6])
+        allergenes_display_infos_substitut = ''
+        for allerg in infos_substitut[0][0][7][1:-1].split(','):
+        	if allerg[0] == ' ' :
+        		allerg = allerg[1:]
+        	allergenes_display_infos_substitut += allerg[4:-1] + ', '
+        allergenes_display_infos_substitut = allergenes_display_infos_substitut[:-2]
+        print('Allergènes :', allergenes_display_infos_substitut)
+        traces_display_infos_substitut = ''
+        for trace in infos_substitut[0][0][8][1:-1].split(','):
+        	if trace[0] == ' ' :
+        		trace = trace[1:]
+        	traces_display_infos_substitut += trace[4:-1] + ', '
+        traces_display_infos_substitut = traces_display_infos_substitut[:-2]
+        print("Substances susceptibles de provoquer des allergies à l'état de traces :", traces_display_infos_substitut)
+        print('Nutriscore :', infos_substitut[0][0][9])
+        print('Lien Open Foods Facts :', infos_substitut[0][0][10])
         return "menu7"
