@@ -1,29 +1,26 @@
-"""
-Ce module est chargé de la création de la table et de l'insertion des produits
-"""
+"""This module is responsible for creating the table and inserting the products."""
 
 
 import mysql.connector
 
 
-class InstallationProduits:
-    """ Cette classe est la classe des objets chargés de la création de la table et de l'insertion des produits """
+class InstallationProducts:
+    """This class is the class of objects responsible for creating the table and inserting products."""
 
     def __init__(self):
+        """Init."""
         pass
 
     def create_table_prod(self, cursor, cnx):
-        """ Cette méthode permet la création de la table des produits """
-
+        """This method allows the creation of the product table."""
         create_table_prod = "CREATE TABLE Produits (id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,nom TEXT NOT NULL,quantite VARCHAR(255),marque TEXT,nom_categories TEXT,labels TEXT,ingredients TEXT,produits_provoqu_allergies TEXT,traces_eventuelles TEXT,nutriscore VARCHAR(255), lien_o_ff TEXT,PRIMARY KEY (id)) ENGINE=INNODB"
         cursor.execute(create_table_prod)
         cnx.commit()
 
     def insert_rows_prod(self, validation, cursor, cnx):
-        """ Cette méthode permet l'insertion des produits """
-
+        """This method allows the insertion of products."""
         data_to_insert = []
-        for prod in validation.colonnes_prods:
+        for prod in validation.rows_prods:
             data_to_insert.append(
                 tuple(
                     [
