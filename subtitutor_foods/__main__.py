@@ -20,7 +20,7 @@ cnx = mysql.connector.connect(user="p5_user", password="motdepasse", database="p
 cursor = cnx.cursor()
 
 
-with open("installation_status.json", "r") as instal_stat:
+with open("subtitutor_foods/installation_status.json", "r") as instal_stat:
     dict_status = json.load(instal_stat)
 
 if dict_status["installation_status"] == "off":
