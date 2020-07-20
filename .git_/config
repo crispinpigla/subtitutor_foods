@@ -1,8 +1,0 @@
-[core]
-	repositoryformatversion = 0
-	filemode = true
-	bare = false
-	logallrefupdates = true
-[remote "P5"]
-	url = https://github.com/crispinpigla/subtitutor_foods.git
-	fetch = +refs/heads/*:refs/remotes/P5/*
