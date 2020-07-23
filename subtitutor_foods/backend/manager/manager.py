@@ -130,7 +130,7 @@ class Managers:
         query = (
             "SELECT id, nom, quantite, marque, nutriscore FROM Produits WHERE id IN (SELECT id_produit FROM Categories_produits WHERE nom_categorie = '"
             + category_name
-            + "' ) AND  ( nutriscore <= '"
+            + "' ) AND  ( nutriscore < '"
             + product_nutriscore
             + "' )"
             + " ORDER BY nutriscore LIMIT "
@@ -141,7 +141,7 @@ class Managers:
         query_count = (
             "SELECT COUNT(*) FROM Produits WHERE id IN (SELECT id_produit FROM Categories_produits WHERE nom_categorie =  '"
             + category_name
-            + "' ) AND  ( nutriscore <= '"
+            + "' ) AND  ( nutriscore < '"
             + product_nutriscore
             + "' )"
         )

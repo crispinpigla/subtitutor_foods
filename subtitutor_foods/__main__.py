@@ -4,23 +4,24 @@ import requests
 import json
 import mysql.connector
 
-import Console.navigation
-import Console.display
-from Back_end.Installation import download
-from Back_end.Installation import validations
-from Back_end.Installation import installation_categories
-from Back_end.Installation import installation_stores
-from Back_end.Installation import installation_products
-from Back_end.Installation import installation_favorites
-from Back_end.Installation import installation_categories_products
-from Back_end.Installation import installation_stores_products
+from subtitutor_foods.console import navigation
+from subtitutor_foods.console import display
+from subtitutor_foods.backend.installation import download
+from subtitutor_foods.backend.installation import validations
+from subtitutor_foods.backend.installation import categories
+from subtitutor_foods.backend.installation import stores
+from subtitutor_foods.backend.installation import products
+from subtitutor_foods.backend.installation import favorites
+from subtitutor_foods.backend.installation import categories_products
+from subtitutor_foods.backend.installation import stores_products
+from subtitutor_foods.backend import create_database
+from subtitutor_foods import config
 
 
-cnx = mysql.connector.connect(user="p5_user", password="motdepasse", database="p5_0")
+cnx = mysql.connector.connect(user=config.USER_NAME, password=config.PASSEWORD, database=config.DATABASES_NAME)
 cursor = cnx.cursor()
 
-
-with open("subtitutor_foods/installation_status.json", "r") as instal_stat:
+with open("installation_status.json", "r") as instal_stat:
     dict_status = json.load(instal_stat)
 
 if dict_status["installation_status"] == "off":
@@ -34,16 +35,12 @@ if dict_status["installation_status"] == "off":
     validation0.sort_build(download0)
 
     # Creation of installers
-    installation_categories0 = installation_categories.InstallationCategories()
-    installation_product0 = installation_products.InstallationProducts()
-    installation_stores0 = installation_stores.InstallationStores()
-    installation_favorites0 = installation_favorites.InstallationFavorites()
-    installation_categories_products0 = (
-        installation_categories_products.InstallationCategoriesProducts()
-    )
-    installation_stores_products0 = (
-        installation_stores_products.InstallationStoresProducts()
-    )
+    installation_categories0 = categories.InstallationCategories()
+    installation_product0 = products.InstallationProducts()
+    installation_stores0 = stores.InstallationStores()
+    installation_favorites0 = favorites.InstallationFavorites()
+    installation_categories_products0 = categories_products.InstallationCategoriesProducts()
+    installation_stores_products0 = stores_products.InstallationStoresProducts()
 
     # Création of tables
     installation_categories0.create_table_cat(cursor, cnx)
@@ -68,10 +65,12 @@ if dict_status["installation_status"] == "off":
 elif dict_status["installation_status"] == "on":
     pass
 
-# Launch the application
-disp = Console.display.Display(cursor, cnx)
+print(dict_status["installation_status"])
 
-monapp = Console.navigation.Navigation(disp)
+# Launch the application
+disp = display.Display(cursor, cnx)
+
+monapp = navigation.Navigation(disp)
 monapp.distributor_menu()
 
 cursor.close()

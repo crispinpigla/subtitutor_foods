@@ -1,7 +1,7 @@
 """This module manages the display of the different menus."""
 
-from Back_end.manager import manager
-import config
+from subtitutor_foods.backend.manager import manager
+import subtitutor_foods.config
 
 
 class Display:
@@ -16,27 +16,24 @@ class Display:
         # the manager
         self.manage = manager.Managers()
 
-    def menu0(self):
+    def main_menu(self):
         """This method controls the display of the main menu."""
+        self.display_decoration("Menu principal", "_")
         print(
-            "_______________________________________________\nMenu principal     \n_______________________________________________"
+            "1\n\nRechercher des substitutes\n"
+            + "-" * 27
+            + "\n2\n\nConsulter les favorites\n"
+            + "-" * 27
         )
-        print(
-            "1\n\nRechercher des substitutes\n---------------------------\n2\n\nConsulter les favorites\n---------------------------"
-        )
-        print(
-            "-----------------------------------------------\nq : Quitter l'application\n-----------------------------------------------"
-        )
-        return "menu0"
+        self.display_decoration("q : Quitter l'application", "-")
+        return "main_menu"
 
-    def menu1(self, page_catego, size_page_catego):
+    def category_menu(self, page_catego, size_page_catego):
         """This method manages the display of the category menu."""
         categories = self.manage.get_categories_size_page(
             size_page_catego, page_catego, self.cursor, self.connection
         )
-        print(
-            "_______________________________________________\nMenu des catégories     \n_______________________________________________"
-        )
+        self.display_decoration("Menu des catégories", "_")
         lines_cat_db = categories[1][0][0]
         list_catego_display = []
         catego_display = {"selection": "", "id": "", "nom": "", "ids_prods": ""}
@@ -53,12 +50,13 @@ class Display:
                 "--",
                 i[1],
             )
-        print(
-            "-----------------------------------------------\nq : Quitter l'application  |  mp : Menu précédent  |  s : Page suivante  |  p : Page précédente\n-----------------------------------------------"
+        self.display_decoration(
+            "q : Quitter l'application  |  mp : Menu précédent  |  s : Page suivante  |  p : Page précédente",
+            "-",
         )
-        return ["menu1", lines_cat_db, list_catego_display]
+        return ["category_menu", lines_cat_db, list_catego_display]
 
-    def menu2(self, page_produ, size_page_produ, category_cursor):
+    def products_menu(self, page_produ, size_page_produ, category_cursor):
         """This method manages the display of the products menu."""
         products = self.manage.get_products_size_page(
             category_cursor["nom"],
@@ -70,9 +68,7 @@ class Display:
         lines_prod_cat_bd = products[1][0][0]
         list_produ_display = []
         prod_display = {"selection": "", "nutriscore": "", "id": ""}
-        print(
-            "_______________________________________________\nMenu des produits     \n_______________________________________________"
-        )
+        self.display_decoration("Menu des produits", "_")
         for i in products[0]:
             prod_display["selection"] = products[0].index(i) + (
                 (page_produ - 1) * size_page_produ
@@ -87,12 +83,13 @@ class Display:
             print("Marque :", i[3])
             print("Nutriscore :", i[4])
             print("---------------------------")
-        print(
-            "-----------------------------------------------\nq : Quitter l'application  |  mp : Menu précédent  |  s : Page suivante  |  p : Page précédente\n-----------------------------------------------"
+        self.display_decoration(
+            "q : Quitter l'application  |  mp : Menu précédent  |  s : Page suivante  |  p : Page précédente",
+            "-",
         )
-        return ["menu2", lines_prod_cat_bd, list_produ_display]
+        return ["products_menu", lines_prod_cat_bd, list_produ_display]
 
-    def menu3(
+    def substitutes_menu(
         self,
         category_cursor,
         product_cursor,
@@ -110,45 +107,46 @@ class Display:
             self.connection,
         )
         lines_subst_prod_cat_db = substitutes[1][0][0]
-        print(
-            "_______________________________________________\nMenu des substituts     \n_______________________________________________"
-        )
+        self.display_decoration("Menu des substituts", "_")
         list_subst_display = []
-        for i in substitutes[0]:
-            stores = self.manage.get_stores_prod(
-                store_numbers, i[0], self.cursor, self.connection
+        if lines_subst_prod_cat_db == 0:
+            print("\n" * 2, "Aucun résultat pour ce produit ", "\n" * 2)
+        else:
+            for i in substitutes[0]:
+                stores = self.manage.get_stores_prod(
+                    store_numbers, i[0], self.cursor, self.connection
+                )
+                list_subst_display.append(
+                    {
+                        "selection": substitutes[0].index(i)
+                        + ((page_subst - 1) * size_page_subst),
+                        "id": i[0],
+                    }
+                )
+                print(substitutes[0].index(i) + ((page_subst - 1) * size_page_subst))
+                print("Nom :", i[1])
+                print("Quantité :", i[2])
+                print("Marque :", i[3])
+                print("Nutriscore :", i[4])
+                stor_display = ""
+                for stor in stores[0]:
+                    stor_display += stor[0] + ", "
+                stor_display = stor_display[:-2]
+                print("Magasin  : ", stor_display)
+                print("---------------------------")
+            self.display_decoration(
+                "q : Quitter l'application  |  mp : Menu précédent  |  s : Page suivante  |  p : Page précédente",
+                "-",
             )
-            list_subst_display.append(
-                {
-                    "selection": substitutes[0].index(i)
-                    + ((page_subst - 1) * size_page_subst),
-                    "id": i[0],
-                }
-            )
-            print(substitutes[0].index(i) + ((page_subst - 1) * size_page_subst))
-            print("Nom :", i[1])
-            print("Quantité :", i[2])
-            print("Marque :", i[3])
-            print("Nutriscore :", i[4])
-            stor_display = ""
-            for stor in stores[0]:
-                stor_display += stor[0] + ", "
-            stor_display = stor_display[:-2]
-            print("Magasin  : ", stor_display)
-            print("---------------------------")
-        print(
-            "-----------------------------------------------\nq : Quitter l'application  |  mp : Menu précédent  |  s : Page suivante  |  p : Page précédente\n-----------------------------------------------"
-        )
-        return ["menu3", lines_subst_prod_cat_db, list_subst_display]
 
-    def menu4(self, substitute_cursor, store_numbers):
+        return ["substitutes_menu", lines_subst_prod_cat_db, list_subst_display]
+
+    def substitute_menu(self, substitute_cursor, store_numbers):
         """This method manages the display of the substitute menu."""
         products = self.manage.get_all_infos_prod(
             substitute_cursor["id"], self.cursor, self.connection
         )
-        print(
-            "_______________________________________________\nDétails du substitut     \n_______________________________________________"
-        )
+        self.display_decoration("Détails du substitut", "_")
         print("Nom :", products[0][0][1])
         print("Quantité :", products[0][0][2])
         print("Marque :", products[0][0][3])
@@ -157,16 +155,18 @@ class Display:
         print("Ingrédients :", products[0][0][6])
         allergens_display = ""
         for allerg in products[0][0][7][1:-1].split(","):
-            if allerg[0] == " ":
-                allerg = allerg[1:]
-            allergens_display += allerg[4:-1] + ", "
+            if len(allerg) >= 1:
+                if allerg[0] == " ":
+                    allerg = allerg[1:]
+                allergens_display += allerg[4:-1] + ", "
         allergens_display = allergens_display[:-2]
         print("Allergènes :", allergens_display)
         traces_display = ""
         for trace in products[0][0][8][1:-1].split(","):
-            if trace[0] == " ":
-                trace = trace[1:]
-            traces_display += trace[4:-1] + ", "
+            if len(trace) >= 1:
+                if trace[0] == " ":
+                    trace = trace[1:]
+                traces_display += trace[4:-1] + ", "
         traces_display = traces_display[:-2]
         print(
             "Substances susceptibles de provoquer des allergies à l'état de traces :",
@@ -182,19 +182,18 @@ class Display:
             stor_display += stor[0] + ", "
         stor_display = stor_display[:-2]
         print("Magasin  : ", stor_display)
-        print(
-            "-----------------------------------------------\nq : Quitter l'application  |  mp : Menu précédent  |  e : Enregistrer le substitut\n-----------------------------------------------"
+        self.display_decoration(
+            "q : Quitter l'application  |  mp : Menu précédent  |  e : Enregistrer le substitut",
+            "-",
         )
-        return ["menu4"]
+        return ["substitute_menu"]
 
-    def menu5(self, product_cursor, substitute_cursor):
+    def registration_menu(self, product_cursor, substitute_cursor):
         """This method manages the display of the registration confirmation menu in the database."""
         check_fav = self.manage.check_in_fav(
             product_cursor["id"], substitute_cursor["id"], self.cursor, self.connection
         )
-        print(
-            "_______________________________________________\nMenu d'enregistrement     \n_______________________________________________"
-        )
+        self.display_decoration("Menu d'enregistrement", "_")
         if check_fav[0] == []:
             self.manage.add_in_fav(
                 product_cursor["id"],
@@ -202,22 +201,20 @@ class Display:
                 self.cursor,
                 self.connection,
             )
-            print("\nSubstitut enregistré dans vos favorites\n")
+            print("\n\n\n\n\nSubstitut enregistré dans vos favorites\n\n\n\n\n")
         else:
-            print("\nCet enregistrement est déjà dans vos favorites\n")
-        print(
-            "-----------------------------------------------\nq : Quitter l'application  |  mp : Menu précédent\n-----------------------------------------------"
+            print("\n\n\n\n\nCet enregistrement est déjà dans vos favorites\n\n\n\n\n")
+        self.display_decoration(
+            "q : Quitter l'application  |  mp : Menu précédent", "-"
         )
-        return "menu5"
+        return "registration_menu"
 
-    def menu6(self, size_page_favo, page_favo):
+    def favorites_menu(self, size_page_favo, page_favo):
         """This method manages the display of the favorites menu."""
         favorites = self.manage.get_ids_favorites_size_page(
             size_page_favo, page_favo, self.cursor, self.connection
         )
-        print(
-            "_______________________________________________\nMenu des favoris     \n_______________________________________________"
-        )
+        self.display_decoration("Menu des favoris", "_")
         list_favo_display = []
         for i in favorites[0]:
             list_favo_display.append(
@@ -239,12 +236,13 @@ class Display:
                 substitute[0][1],
             )
             print("---------------------------")
-        print(
-            "-----------------------------------------------\nq : Quitter l'application  |  mp : Menu précédent  |  s : Page suivante  |  p : Page précédente\n-----------------------------------------------"
+        self.display_decoration(
+            "q : Quitter l'application  |  mp : Menu précédent  |  s : Page suivante  |  p : Page précédente",
+            "-",
         )
-        return ["menu6", favorites[1][0][0], list_favo_display]
+        return ["favorites_menu", favorites[1][0][0], list_favo_display]
 
-    def menu7(self, favori_cursor, store_numbers):
+    def comparing_product_substitute(self, favori_cursor, store_numbers):
         """This method manages the display of the menu for comparing a product to its substitute."""
         infos_prods_substituted = self.manage.get_all_infos_prod(
             favori_cursor["id_prod"], self.cursor, self.connection
@@ -252,9 +250,7 @@ class Display:
         infos_substitute = self.manage.get_all_infos_prod(
             favori_cursor["id_subs"], self.cursor, self.connection
         )
-        print(
-            "_______________________________________________\nMenu de détails du favori     \n_______________________________________________"
-        )
+        self.display_decoration("Menu de détails du favori", "_")
         print("Produit substitué :")
         print("Nom :", infos_prods_substituted[0][0][1])
         print("Quantité :", infos_prods_substituted[0][0][2])
@@ -264,16 +260,18 @@ class Display:
         print("Ingrédients :", infos_prods_substituted[0][0][6])
         allergens_display = ""
         for allerg in infos_prods_substituted[0][0][7][1:-1].split(","):
-            if allerg[0] == " ":
-                allerg = allerg[1:]
-            allergens_display += allerg[4:-1] + ", "
+            if len(allerg) >= 1:
+                if allerg[0] == " ":
+                    allerg = allerg[1:]
+                allergens_display += allerg[4:-1] + ", "
         allergens_display = allergens_display[:-2]
         print("Allergènes :", allergens_display)
         traces_display = ""
         for trace in infos_prods_substituted[0][0][8][1:-1].split(","):
-            if trace[0] == " ":
-                trace = trace[1:]
-            traces_display += trace[4:-1] + ", "
+            if len(trace) >= 1:
+                if trace[0] == " ":
+                    trace = trace[1:]
+                traces_display += trace[4:-1] + ", "
         traces_display = traces_display[:-2]
         print(
             "Substances susceptibles de provoquer des allergies à l'état de traces :",
@@ -291,16 +289,18 @@ class Display:
         print("Ingrédients :", infos_substitute[0][0][6])
         allergenes_display_infos_substitute = ""
         for allerg in infos_substitute[0][0][7][1:-1].split(","):
-            if allerg[0] == " ":
-                allerg = allerg[1:]
-            allergenes_display_infos_substitute += allerg[4:-1] + ", "
+            if len(allerg) >= 1:
+                if allerg[0] == " ":
+                    allerg = allerg[1:]
+                allergenes_display_infos_substitute += allerg[4:-1] + ", "
         allergenes_display_infos_substitute = allergenes_display_infos_substitute[:-2]
         print("Allergènes :", allergenes_display_infos_substitute)
         traces_display_infos_substitute = ""
         for trace in infos_substitute[0][0][8][1:-1].split(","):
-            if trace[0] == " ":
-                trace = trace[1:]
-            traces_display_infos_substitute += trace[4:-1] + ", "
+            if len(trace) >= 1:
+                if trace[0] == " ":
+                    trace = trace[1:]
+                traces_display_infos_substitute += trace[4:-1] + ", "
         traces_display_infos_substitute = traces_display_infos_substitute[:-2]
         print(
             "Substances susceptibles de provoquer des allergies à l'état de traces :",
@@ -316,7 +316,14 @@ class Display:
             stor_display += stor[0] + ", "
         stor_display = stor_display[:-2]
         print("Magasin  : ", stor_display)
-        print(
-            "-----------------------------------------------\nq : Quitter l'application  |  mp : Menu précédent\n-----------------------------------------------"
+        self.display_decoration(
+            "q : Quitter l'application  |  mp : Menu précédent", "-"
         )
-        return "menu7"
+        return ["comparing_product_substitute"]
+
+    def display_decoration(self, title, decoration):
+        """Display header and footer of menus."""
+        if decoration == "_":
+            print("\n" * 10 + decoration * 50 + "\n" + title + "\n" + decoration * 50)
+        else:
+            print(decoration * 50 + "\n" + title + "\n" + decoration * 50)
