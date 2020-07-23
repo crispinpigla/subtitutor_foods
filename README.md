@@ -2,7 +2,7 @@
 Application qui permet d'obtenir le substitut d'un produit à partir des données l'Open Foods Fact
 # Installation
 ## installer mysql
-Sous linux installer les client et serveur mysql grace à la commande sudo apt-get `install mysql-server mysql-client`
+Sous linux installer les client et serveur mysql grace à la commande `sudo apt-get install mysql-server mysql-client`
 ## Se connecter à mysql en mode root
 Sous linux entrer la commande `sudo mysql`
 ## Creation de la base de données

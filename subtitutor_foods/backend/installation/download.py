@@ -24,4 +24,4 @@ class Download:
             )
             request_prod_api_open_ff = json.loads(request_prod_api_open_ff.text)
             self.rows_prods.append(request_prod_api_open_ff["products"])
-            print(num_page + 1)
+            print('Téléchargement des produits ', num_page + 1, '/', 10)
