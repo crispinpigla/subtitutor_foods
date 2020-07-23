@@ -14,7 +14,6 @@ from subtitutor_foods.backend.installation import products
 from subtitutor_foods.backend.installation import favorites
 from subtitutor_foods.backend.installation import categories_products
 from subtitutor_foods.backend.installation import stores_products
-from subtitutor_foods.backend import create_database
 from subtitutor_foods import config
 
 
