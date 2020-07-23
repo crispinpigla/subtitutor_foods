@@ -11,6 +11,10 @@ Dans mysql entrer la commande `CREATE DATABASE database_name CHARACTER SET 'utf8
 Dans mysql entrer la commande `CREATE USER 'p5_user'@'localhost' IDENTIFIED BY 'motdepasse';`
 ## Restreindre le privilèges de l'utilisateur de l'application
 Dans mysql entrer la commande `GRANT ALL PRIVILEGES ON database_name.* TO 'p5_user'@'localhost';`
+## Activer l'environement virtuelle
+Sous linux, dans l'invite commande, naviguer jusqu'au répertoire du fichier contenant l'application et executer la commande `sudo pipenv shell`
+## Installer les dépendance
+Sous linux, dans l'invite commande, naviguer jusqu'au répertoire du fichier contenant l'application et executer la commande `sudo pipenv install`
 ## Lancer l'application
 Sous linux, dans l'invite commande, naviguer jusqu'au répertoire du fichier contenant l'application et executer la commande `python3 -m subtitutor_foods`
 # Désinstaller l'application
