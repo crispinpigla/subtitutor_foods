@@ -1,5 +1,7 @@
 """This module is used to create the application database."""
 
+import mysql.connector
+
 from subtitutor_foods import config
 
 
@@ -12,6 +14,7 @@ class CreateDataBase:
 
 	def create_database(self,cursor, cnx):
 		"""This method is used to create the application database."""
-		create_database = "CREATE DATABASE " + config.DATABASES_NAME + " CHARACTER SET 'utf8'"
+		create_database = "CREATE DATABASE IF NOT EXISTS " + config.DATABASES_NAME + " CHARACTER SET 'utf8'"
 		cursor.execute(create_database)
 		cnx.commit()
+		return mysql.connector.connect(user=config.USER_NAME, password=config.PASSEWORD, database=config.DATABASES_NAME)

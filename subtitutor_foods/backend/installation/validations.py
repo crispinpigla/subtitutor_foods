@@ -31,7 +31,7 @@ class Validations:
                     pass
         self.rows_prods = list_prod
 
-        # Construction of product-storeasins and products-categories dictionaries
+        # Construction of product-stores and products-categories dictionaries
         list_prod_store = []
         list_prod_catego = []
         for prod1 in self.rows_prods:
@@ -39,6 +39,9 @@ class Validations:
                 list_store = prod1["stores"].split(",")
                 try:
                     list_cat = prod1["categories"].split(",")
+                    # Remove the empty catégories
+                    for empty in range(list_cat.count(' ')):
+                        list_cat.remove(' ')
                     list_prod_store.append({prod1["code"]: list_store})
                     list_prod_catego.append({prod1["code"]: list_cat})
                 except KeyError as e:

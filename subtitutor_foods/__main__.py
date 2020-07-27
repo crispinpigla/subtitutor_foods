@@ -17,13 +17,14 @@ from subtitutor_foods.backend.installation import stores_products
 from subtitutor_foods import config
 from subtitutor_foods.backend.installation import create_database
 
-cnx = mysql.connector.connect(user=config.USER_NAME, password=config.PASSEWORD, database=config.DATABASES_NAME)
-cursor = cnx.cursor()
 
 with open("installation_status.json", "r") as instal_stat:
     dict_status = json.load(instal_stat)
 
 if dict_status["installation_status"] == "off":
+
+    cnx = mysql.connector.connect(user=config.USER_NAME, password=config.PASSEWORD)
+    cursor = cnx.cursor()
 
     # Downloading API data
     download0 = download.Download()
@@ -41,9 +42,10 @@ if dict_status["installation_status"] == "off":
     installation_categories_products0 = categories_products.InstallationCategoriesProducts()
     installation_stores_products0 = stores_products.InstallationStoresProducts()
 
-    #Creation of database
+    # Creation of database and update the connexion
     create_database0 = create_database.CreateDataBase()
-    create_database0.create_database(cursor, cnx)
+    cnx = create_database0.create_database(cursor, cnx)
+    cursor = cnx.cursor()
 
     # Creation of tables
     installation_categories0.create_table_cat(cursor, cnx)
@@ -66,7 +68,8 @@ if dict_status["installation_status"] == "off":
         json.dump(dict_status, file)
 
 elif dict_status["installation_status"] == "on":
-    pass
+    cnx = mysql.connector.connect(user=config.USER_NAME, password=config.PASSEWORD, database=config.DATABASES_NAME)
+    cursor = cnx.cursor()
 
 print(dict_status["installation_status"])
 

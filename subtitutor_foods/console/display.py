@@ -235,6 +235,7 @@ class Display:
                 "       substitué par         ",
                 substitute[0][1],
             )
+            print('\nDate d\'enregistrement : ', favorites[0][0][2], '\n')
             print("---------------------------")
         self.display_decoration(
             "q : Quitter l'application  |  mp : Menu précédent  |  s : Page suivante  |  p : Page précédente",

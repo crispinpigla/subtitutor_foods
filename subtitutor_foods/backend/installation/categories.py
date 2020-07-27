@@ -12,7 +12,7 @@ class InstallationCategories:
 
     def create_table_cat(self, cursor, cnx):
         """This method allows the creation of the category table."""
-        create_table_cat = "CREATE TABLE Categories (id SMALLINT UNSIGNED NOT NULL AUTO_INCREMENT, nom VARCHAR(255) NOT NULL, PRIMARY KEY (id) ) ENGINE=INNODB"
+        create_table_cat = "CREATE TABLE IF NOT EXISTS Categories (id SMALLINT UNSIGNED NOT NULL AUTO_INCREMENT, nom VARCHAR(255) NOT NULL, PRIMARY KEY (id) ) ENGINE=INNODB"
         cursor.execute(create_table_cat)
         cnx.commit()
 

@@ -13,7 +13,7 @@ class InstallationStores:
 
     def create_table_store(self, cursor, cnx):
         """This method allows the creation of the store table."""
-        create_table_store = "CREATE TABLE Magasins (id SMALLINT UNSIGNED NOT NULL AUTO_INCREMENT, nom VARCHAR(255) NOT NULL, PRIMARY KEY (id)) ENGINE=INNODB"
+        create_table_store = "CREATE TABLE IF NOT EXISTS Magasins (id SMALLINT UNSIGNED NOT NULL AUTO_INCREMENT, nom VARCHAR(255) NOT NULL, PRIMARY KEY (id)) ENGINE=INNODB"
         cursor.execute(create_table_store)
         cnx.commit()
 
