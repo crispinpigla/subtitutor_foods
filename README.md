@@ -6,7 +6,7 @@ Sous linux installer les client et serveur mysql grace à la commande `sudo apt-
 ## Se connecter à mysql en mode root
 Sous linux entrer la commande `sudo mysql`
 ## Creation de la base de données
-Dans mysql entrer la commande `CREATE DATABASE database_name CHARACTER SET 'utf8';`
+Le script de création de la base de donnée et des différentes tables de l'application se trouvent dans le répertoire `subtitutor_foods/subtitutor_foods/backend/installation/`.Ils sont exécutés au premier lancement de l'application.
 ## Creation utilisateur
 Dans mysql entrer la commande `CREATE USER 'p5_user'@'localhost' IDENTIFIED BY 'motdepasse';`
 ## Restreindre le privilèges de l'utilisateur de l'application

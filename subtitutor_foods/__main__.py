@@ -15,7 +15,7 @@ from subtitutor_foods.backend.installation import favorites
 from subtitutor_foods.backend.installation import categories_products
 from subtitutor_foods.backend.installation import stores_products
 from subtitutor_foods import config
-
+from subtitutor_foods.backend.installation import create_database
 
 cnx = mysql.connector.connect(user=config.USER_NAME, password=config.PASSEWORD, database=config.DATABASES_NAME)
 cursor = cnx.cursor()
@@ -41,7 +41,11 @@ if dict_status["installation_status"] == "off":
     installation_categories_products0 = categories_products.InstallationCategoriesProducts()
     installation_stores_products0 = stores_products.InstallationStoresProducts()
 
-    # Création of tables
+    #Creation of database
+    create_database0 = create_database.CreateDataBase()
+    create_database0.create_database(cursor, cnx)
+
+    # Creation of tables
     installation_categories0.create_table_cat(cursor, cnx)
     installation_product0.create_table_prod(cursor, cnx)
     installation_stores0.create_table_store(cursor, cnx)
