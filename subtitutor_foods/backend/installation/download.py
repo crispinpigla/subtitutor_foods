@@ -26,7 +26,7 @@ class Download:
             request_products_api_open_food_facts = json.loads(
                 request_products_api_open_food_facts.text
             )
-            self.rows_prods.append(
+            self.rows_products.append(
                 request_products_api_open_food_facts["products"]
             )
             print("Téléchargement des produits ", number_page + 1, "/", 10)

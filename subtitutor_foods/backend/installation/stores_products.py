@@ -10,7 +10,7 @@ class InstallationStoresProducts:
         """Init."""
         pass
 
-    def create_table_store_prod(self, cursor, connection):
+    def create_table_store_product(self, cursor, connection):
         """This method allows the creation of the product-stores tables."""
         create_table_store_products = (
             "CREATE TABLE IF NOT EXISTS Magasins_produits ( nom_magasin "

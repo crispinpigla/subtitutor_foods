@@ -34,7 +34,7 @@ if dictionnary_status["installation_status"] == "off":
 
     # Downloading API data
     download0 = download.Download()
-    download0.get_prod_from_api()
+    download0.get_products_from_api()
 
     # Construction and filtering of data to insert in the database
     validation0 = validations.Validations()
@@ -56,20 +56,20 @@ if dictionnary_status["installation_status"] == "off":
     cursor = connection.cursor()
 
     # Creation of tables
-    installation_categories0.create_table_cat(cursor, connection)
-    installation_product0.create_table_prod(cursor, connection)
+    installation_categories0.create_table_categories(cursor, connection)
+    installation_product0.create_table_products(cursor, connection)
     installation_stores0.create_table_store(cursor, connection)
-    installation_favorites0.create_table_fav(cursor, connection)
-    installation_categories_products0.create_table_cat_prod(cursor, connection)
-    installation_stores_products0.create_table_store_prod(cursor, connection)
+    installation_favorites0.create_table_favorites(cursor, connection)
+    installation_categories_products0.create_table_categories_products(cursor, connection)
+    installation_stores_products0.create_table_store_product(cursor, connection)
 
     # Inserting data into the table
-    installation_categories0.insert_rows_cat(validation0, cursor, connection)
-    installation_product0.insert_rows_prod(validation0, cursor, connection)
+    installation_categories0.insert_rows_categories(validation0, cursor, connection)
+    installation_product0.insert_rows_product(validation0, cursor, connection)
     installation_stores0.insert_rows_store(validation0, cursor, connection)
-    installation_categories_products0.insert_rows_cat_prod(
+    installation_categories_products0.insert_rows_categories_products(
         validation0, cursor, connection)
-    installation_stores_products0.insert_rows_store_prod(
+    installation_stores_products0.insert_rows_store_products(
         validation0, cursor, connection)
 
     # Installation status update
