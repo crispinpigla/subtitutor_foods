@@ -1,4 +1,5 @@
-"""This module manages the navigation of the application between different menus."""
+"""This module manages the navigation of the application between different
+menus. """
 
 from subtitutor_foods import config
 
@@ -41,7 +42,8 @@ class Navigation:
         self.favori_cursor = {}
 
     def distributor_menu(self):
-        """This method manages the navigation of the application between different menus."""
+        """This method manages the navigation of the application between
+        different menus. """
 
         # Defining the selection status
         status = self.display.main_menu()
@@ -68,11 +70,13 @@ class Navigation:
             elif status == "substitutes_menu":
                 status = self.ask_substitutes_menu(user_input)
 
-            # The application is in the comparison menu of the product and the selected substitute
+            # The application is in the comparison menu of the product and
+            # the selected substitute
             elif status == "substitute_menu":
                 status = self.ask_substitute_menu(user_input)
 
-            # The application is in the menu of the confirmation of recordings (or message already recorded)
+            # The application is in the menu of the confirmation of
+            # recordings (or message already recorded)
             elif status == "registration_menu":
                 status = self.ask_registration_menu(user_input)
 
@@ -81,12 +85,14 @@ class Navigation:
 
                 status = self.ask_favorites_menu(user_input)
 
-            # The application is in the product comparison and registered substitute menu
+            # The application is in the product comparison and registered
+            # substitute menu
             elif status == "comparing_product_substitute":
                 status = self.ask_comparing_product_substitute(user_input)
 
     def ask_main_menu(self, user_input):
-        """This method allows you to request a menu when the user is in the main menu."""
+        """This method allows you to request a menu when the user is in the
+        main menu. """
         if user_input == "1":
             status = self.get_display("category_menu", self.page_categories)
         elif user_input == "2":
@@ -98,7 +104,8 @@ class Navigation:
         return status
 
     def ask_category_menu(self, user_input):
-        """This method allows you to request a menu when the user is in the categories menu."""
+        """This method allows you to request a menu when the user is in the
+        categories menu. """
         # selection next page
         if user_input == "s":
             status = self.manage_next_page("category_menu")
@@ -122,7 +129,8 @@ class Navigation:
         return status
 
     def ask_products_menu(self, user_input):
-        """This method allows you to request a menu when the user is in the products menu."""
+        """This method allows you to request a menu when the user is in the
+        products menu. """
         # selection next page
         if user_input == "s":
             status = self.manage_next_page("products_menu")
@@ -147,7 +155,8 @@ class Navigation:
         return status
 
     def ask_substitutes_menu(self, user_input):
-        """This method allows you to request a menu when the user is in the substitutes menu."""
+        """This method allows you to request a menu when the user is in the
+        substitutes menu. """
         # selection next page
         if user_input == "s":
             status = self.manage_next_page("substitutes_menu")
@@ -172,10 +181,12 @@ class Navigation:
         return status
 
     def ask_substitute_menu(self, user_input):
-        """This method allows you to request a menu when the user is in the details substitute menu."""
+        """This method allows you to request a menu when the user is in the
+        details substitute menu. """
         # previous menu selection
         if user_input == "mp":
-            status = self.get_display("substitutes_menu", self.page_substitutes)
+            status = self.get_display("substitutes_menu",
+                                      self.page_substitutes)
 
         # record selection
         elif user_input == "e":
@@ -194,7 +205,8 @@ class Navigation:
         return status
 
     def ask_registration_menu(self, user_input):
-        """This method allows you to request a menu when the user is in the registration menu."""
+        """This method allows you to request a menu when the user is in the
+        registration menu. """
         # sélection du menu précédent
         if user_input == "mp":
             status = self.get_display("substitute_menu", None)
@@ -211,7 +223,8 @@ class Navigation:
         return status
 
     def ask_favorites_menu(self, user_input):
-        """This method allows you to request a menu when the user is in the favorites menu."""
+        """This method allows you to request a menu when the user is in the
+        favorites menu. """
         # selection next page
         if user_input == "s":
             status = self.manage_next_page("favorites_menu")
@@ -236,8 +249,8 @@ class Navigation:
         return status
 
     def ask_comparing_product_substitute(self, user_input):
-        """This method allows you to request a menu when the user is in the comparison menu of a product to his
-        substitution. """
+        """This method allows you to request a menu when the user is in the
+        comparison menu of a product to his substitution. """
         # previous menu selection
         if user_input == "mp":
             status = self.get_display("favorites_menu", self.page_favorites)
@@ -253,11 +266,14 @@ class Navigation:
         return status
 
     def manage_next_page(self, which_menu):
-        """This method is used to manage the selection of the next pages of the menus."""
-        # If the remainder of the division of the number of categories in the base by the size of the page is
-        # zero then the page number of categories is the division of the number of categories in the base by
-        # the size of the page. Otherwise the number of category pages is (the division of the number of
-        # categories in the base by the size of the page) + 1.
+        """This method is used to manage the selection of the next pages of
+        the menus. """
+        # If the remainder of the division of the number of categories in
+        # the base by the size of the page is zero then the page number of
+        # categories is the division of the number of categories in the base
+        # by the size of the page. Otherwise the number of category pages is
+        # (the division of the number of categories in the base by the size
+        # of the page) + 1.
         page_menu = {
             "category_menu": self.page_categories,
             "products_menu": self.page_products,
@@ -278,11 +294,12 @@ class Navigation:
         }
 
         if (
-            lines_in_database[which_menu] % number_lines_display[which_menu]
+                lines_in_database[which_menu] % number_lines_display[
+                which_menu]
         ) == 0:
             if page_menu[which_menu] < (
-                lines_in_database[which_menu]
-                // number_lines_display[which_menu]
+                    lines_in_database[which_menu]
+                    // number_lines_display[which_menu]
             ):
                 if which_menu == "category_menu":
                     self.page_categories += 1
@@ -300,14 +317,15 @@ class Navigation:
                 page = page_menu[which_menu]
             status = self.get_display(which_menu, page)
         elif (
-            lines_in_database[which_menu] % number_lines_display[which_menu]
+                lines_in_database[which_menu] % number_lines_display[
+                which_menu]
         ) > 0:
             if page_menu[which_menu] < (
-                (
-                    lines_in_database[which_menu]
-                    // number_lines_display[which_menu]
-                )
-                + 1
+                    (
+                            lines_in_database[which_menu]
+                            // number_lines_display[which_menu]
+                    )
+                    + 1
             ):
                 if which_menu == "category_menu":
                     self.page_categories += 1
@@ -327,7 +345,8 @@ class Navigation:
         return status
 
     def manage_previous_page(self, which_menu):
-        """This method is used to manage the selection of the previous pages of the menus."""
+        """This method is used to manage the selection of the previous pages
+        of the menus. """
         page_menu = {
             "category_menu": self.page_categories,
             "products_menu": self.page_products,
@@ -353,55 +372,59 @@ class Navigation:
         return status
 
     def get_display(self, which_menu, page):
-        """allows to obtain a list of categories, products, substitutes or favorites according to the user's request."""
+        """allows to obtain a list of categories, products, substitutes or
+        favorites according to the user's request. """
         if which_menu == "category_menu":
-            display_nav = self.display.category_menu(page, self.size_page_categories)
-            status = display_nav[0]
-            self.lines_categories_database = display_nav[1]
-            self.categories_display = display_nav[2]
+            display_navigation = self.display.category_menu(
+                page, self.size_page_categories)
+            status = display_navigation[0]
+            self.lines_categories_database = display_navigation[1]
+            self.categories_display = display_navigation[2]
             self.page_categories = page
         elif which_menu == "products_menu":
-            display_nav = self.display.products_menu(
+            display_navigation = self.display.products_menu(
                 page, self.size_page_products, self.category_cursor
             )
-            status = display_nav[0]
-            self.lines_products_categories_database = display_nav[1]
-            self.products_display = display_nav[2]
+            status = display_navigation[0]
+            self.lines_products_categories_database = display_navigation[1]
+            self.products_display = display_navigation[2]
             self.page_products = page
         elif which_menu == "substitutes_menu":
-            display_nav = self.display.substitutes_menu(
+            display_navigation = self.display.substitutes_menu(
                 self.category_cursor,
                 self.product_cursor,
                 self.size_page_substitutes,
                 page,
                 config.STORES_NUMBER,
             )
-            status = display_nav[0]
-            self.lines_subtitutes_products_categories_database = display_nav[1]
-            self.substitutes_display = display_nav[2]
+            status = display_navigation[0]
+            self.lines_subtitutes_products_categories_database = display_navigation[1]
+            self.substitutes_display = display_navigation[2]
             self.page_substitutes = page
         elif which_menu == "substitute_menu":
-            display_nav = self.display.substitute_menu(
+            display_navigation = self.display.substitute_menu(
                 self.substitut_cursor, config.STORES_NUMBER
             )
-            status = display_nav[0]
+            status = display_navigation[0]
         elif which_menu == "favorites_menu":
-            display_nav = self.display.favorites_menu(self.size_page_favorites, page)
-            status = display_nav[0]
-            self.lines_favoris_database = display_nav[1]
-            self.favoris_display = display_nav[2]
+            display_navigation = self.display.favorites_menu(
+                self.size_page_favorites, page)
+            status = display_navigation[0]
+            self.lines_favoris_database = display_navigation[1]
+            self.favoris_display = display_navigation[2]
             self.page_favorites = page
         elif which_menu == "comparing_product_substitute":
-            display_nav = self.display.comparing_product_substitute(
+            display_navigation = self.display.comparing_product_substitute(
                 self.favori_cursor, config.STORES_NUMBER
             )
-            status = display_nav[0]
+            status = display_navigation[0]
         else:
             status = "q"
         return status
 
     def manage_selection(self, user_input, which_menu):
-        """This method is used to manage the selection of a category, product, substitute or favori."""
+        """This method is used to manage the selection of a category,
+        product, substitute or favori. """
         next_menu = {
             "category_menu": "products_menu",
             "products_menu": "substitutes_menu",
@@ -459,6 +482,6 @@ class Navigation:
                 status = self.get_display(which_menu, page_menu[which_menu])
 
         # selection not listed
-        except:
+        except Exception as e:
             status = self.get_display(which_menu, page_menu[which_menu])
         return status

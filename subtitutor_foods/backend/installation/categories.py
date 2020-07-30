@@ -1,6 +1,5 @@
-"""
-This module is responsible for creating the table and inserting categories.
-"""
+"""This module is responsible for creating the table and inserting
+categories. """
 
 
 class InstallationCategories:
@@ -13,18 +12,19 @@ class InstallationCategories:
         """Init."""
         pass
 
-    def create_table_cat(self, cursor, cnx):
+    def create_table_categories(self, cursor, connection):
         """This method allows the creation of the category table."""
-        create_table_cat = (
-            "CREATE TABLE IF NOT EXISTS Categories (id SMALLINT UNSIGNED NOT NULL AUTO_INCREMENT, "
+        create_table_categories = (
+            "CREATE TABLE IF NOT EXISTS Categories (id SMALLINT UNSIGNED NOT "
+            "NULL AUTO_INCREMENT, "
             "nom VARCHAR(255) NOT NULL, PRIMARY KEY (id) ) ENGINE=INNODB "
         )
-        cursor.execute(create_table_cat)
-        cnx.commit()
+        cursor.execute(create_table_categories)
+        connection.commit()
 
-    def insert_rows_cat(self, validation, cursor, cnx):
+    def insert_rows_categories(self, validation, cursor, connection):
         """This method allows the insertion of categories."""
-        add_cat = "INSERT INTO Categories (nom) VALUES (%s)"
-        cursor.executemany(add_cat, validation.rows_cats)
-        cnx.commit()
+        add_categories = "INSERT INTO Categories (nom) VALUES (%s)"
+        cursor.executemany(add_categories, validation.rows_categories)
+        connection.commit()
         print("Insertion categories : ok")
