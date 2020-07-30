@@ -8,7 +8,7 @@ Sous linux entrer la commande `sudo mysql`
 ## Creation de la base de données
 Le script de création de la base de donnée et des différentes tables de l'application se trouvent dans le répertoire `subtitutor_foods/subtitutor_foods/backend/installation/`.Ils sont exécutés au premier lancement de l'application.
 ## Creation utilisateur
-Dans mysql entrer la commande `CREATE USER 'p5_user'@'localhost' IDENTIFIED BY 'motdepasse';`
+Dans mysql entrer la commande `CREATE USER IF NOT EXISTS 'p5_user'@'localhost' IDENTIFIED BY 'motdepasse';`
 ## Restreindre le privilèges de l'utilisateur de l'application
 Dans mysql entrer la commande `GRANT ALL PRIVILEGES ON database_name.* TO 'p5_user'@'localhost';`
 ## Activer l'environement virtuelle

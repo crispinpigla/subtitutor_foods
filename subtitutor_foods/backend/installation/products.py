@@ -1,9 +1,6 @@
 """This module is responsible for creating the table and inserting the products."""
 
 
-import mysql.connector
-
-
 class InstallationProducts:
     """This class is the class of objects responsible for creating the table and inserting products."""
 
@@ -13,7 +10,10 @@ class InstallationProducts:
 
     def create_table_prod(self, cursor, cnx):
         """This method allows the creation of the product table."""
-        create_table_prod = "CREATE TABLE IF NOT EXISTS Produits (id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,nom TEXT NOT NULL,quantite VARCHAR(255),marque TEXT,nom_categories TEXT,labels TEXT,ingredients TEXT,produits_provoqu_allergies TEXT,traces_eventuelles TEXT,nutriscore VARCHAR(255), lien_o_ff TEXT,PRIMARY KEY (id)) ENGINE=INNODB"
+        create_table_prod = ("CREATE TABLE IF NOT EXISTS Produits (id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,"
+                            "nom TEXT NOT NULL,quantite VARCHAR(255),marque TEXT,nom_categories TEXT,labels TEXT,"
+                            "ingredients TEXT,produits_provoqu_allergies TEXT,traces_eventuelles TEXT,nutriscore "
+                            "VARCHAR(255), lien_o_ff TEXT,PRIMARY KEY (id)) ENGINE=INNODB ")
         cursor.execute(create_table_prod)
         cnx.commit()
 

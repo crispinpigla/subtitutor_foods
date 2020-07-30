@@ -1,9 +1,6 @@
 """This module is responsible for creating the table and inserting product-stores."""
 
 
-import mysql.connector
-
-
 class InstallationStoresProducts:
     """This class is the class of objects responsible for creating the table and inserting product stores."""
 
@@ -13,7 +10,8 @@ class InstallationStoresProducts:
 
     def create_table_store_prod(self, cursor, cnx):
         """This method allows the creation of the product-stores tables."""
-        create_table_store_prod = "CREATE TABLE IF NOT EXISTS Magasins_produits ( nom_magasin VARCHAR(255) NOT NULL, id_produit BIGINT UNSIGNED NOT NULL ) ENGINE=INNODB"
+        create_table_store_prod = ("CREATE TABLE IF NOT EXISTS Magasins_produits ( nom_magasin VARCHAR(255) NOT NULL, "
+                                  "id_produit BIGINT UNSIGNED NOT NULL ) ENGINE=INNODB ")
         cursor.execute(create_table_store_prod)
         cnx.commit()
 

@@ -1,6 +1,5 @@
 """Application launch module."""
 
-import requests
 import json
 import mysql.connector
 
@@ -23,8 +22,11 @@ with open("installation_status.json", "r") as instal_stat:
 
 if dict_status["installation_status"] == "off":
 
-    cnx = mysql.connector.connect(user=config.USER_NAME, password=config.PASSEWORD)
-    cursor = cnx.cursor()
+    try:
+        cnx = mysql.connector.connect(user=config.USER_NAME, password=config.PASSEWORD)
+        cursor = cnx.cursor()
+    except Exception as e:
+        print('Vos identifiants de connexion à la base de donnée sont incorrectes')
 
     # Downloading API data
     download0 = download.Download()
@@ -39,7 +41,9 @@ if dict_status["installation_status"] == "off":
     installation_product0 = products.InstallationProducts()
     installation_stores0 = stores.InstallationStores()
     installation_favorites0 = favorites.InstallationFavorites()
-    installation_categories_products0 = categories_products.InstallationCategoriesProducts()
+    installation_categories_products0 = (
+        categories_products.InstallationCategoriesProducts()
+    )
     installation_stores_products0 = stores_products.InstallationStoresProducts()
 
     # Creation of database and update the connexion
@@ -68,16 +72,25 @@ if dict_status["installation_status"] == "off":
         json.dump(dict_status, file)
 
 elif dict_status["installation_status"] == "on":
-    cnx = mysql.connector.connect(user=config.USER_NAME, password=config.PASSEWORD, database=config.DATABASES_NAME)
-    cursor = cnx.cursor()
+    try:
+        cnx = mysql.connector.connect(
+            user=config.USER_NAME, password=config.PASSEWORD, database=config.DATABASES_NAME
+        )
+        cursor = cnx.cursor()
+    except Exception as e:
+        print('\n\nVos identifiants de connexion à la base de donnée sont incorrectes\n\n')
+    
 
-print(dict_status["installation_status"])
 
 # Launch the application
-disp = display.Display(cursor, cnx)
+try:
+    disp = display.Display(cursor, cnx)
+    monapp = navigation.Navigation(disp)
+    monapp.distributor_menu()
+    cursor.close()
+    cnx.close()
+except Exception as e:
+    pass
 
-monapp = navigation.Navigation(disp)
-monapp.distributor_menu()
 
-cursor.close()
-cnx.close()
+

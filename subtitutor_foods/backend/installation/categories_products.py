@@ -13,7 +13,8 @@ class InstallationCategoriesProducts:
 
     def create_table_cat_prod(self, cursor, cnx):
         """This method allows the creation of the table of product-categories."""
-        create_table_cat_prod = "CREATE TABLE IF NOT EXISTS Categories_produits ( nom_categorie VARCHAR(255) NOT NULL, id_produit BIGINT UNSIGNED NOT NULL ) ENGINE=INNODB"
+        create_table_cat_prod = ("CREATE TABLE IF NOT EXISTS Categories_produits ( nom_categorie VARCHAR(255) NOT "
+                                "NULL, id_produit BIGINT UNSIGNED NOT NULL ) ENGINE=INNODB ")
         cursor.execute(create_table_cat_prod)
         cnx.commit()
 

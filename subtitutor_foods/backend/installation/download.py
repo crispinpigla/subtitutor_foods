@@ -1,10 +1,9 @@
 """This module allows you to manage the download of products."""
 
 
-import requests
 import json
 
-import mysql.connector
+import requests
 
 
 class Download:
@@ -20,8 +19,9 @@ class Download:
             request_prod_api_open_ff = requests.get(
                 "https://fr.openfoodfacts.org/cgi/search.pl?action=process&sort_by=unique_scans_n&page_size=1000&page="
                 + str(num_page + 1)
-                + "&json=true&fields=product_name,stores,categories,code,nutriscore_data,quantity,brands,labels,allergens_tags,traces_tags,url,ingredients_text"
+                + "&json=true&fields=product_name,stores,categories,code,nutriscore_data,quantity,brands,labels,"
+                  "allergens_tags,traces_tags,url,ingredients_text "
             )
             request_prod_api_open_ff = json.loads(request_prod_api_open_ff.text)
             self.rows_prods.append(request_prod_api_open_ff["products"])
-            print('Téléchargement des produits ', num_page + 1, '/', 10)
+            print("Téléchargement des produits ", num_page + 1, "/", 10)

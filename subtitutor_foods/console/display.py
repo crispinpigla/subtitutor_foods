@@ -1,7 +1,6 @@
 """This module manages the display of the different menus."""
 
 from subtitutor_foods.backend.manager import manager
-import subtitutor_foods.config
 
 
 class Display:
@@ -51,7 +50,7 @@ class Display:
                 i[1],
             )
         self.display_decoration(
-            "q : Quitter l'application  |  mp : Menu précédent  |  s : Page suivante  |  p : Page précédente",
+            "q : Quitter l'application  \nmp: Menu précédent   \ns : Page suivante  \np : Page précédente",
             "-",
         )
         return ["category_menu", lines_cat_db, list_catego_display]
@@ -84,7 +83,7 @@ class Display:
             print("Nutriscore :", i[4])
             print("---------------------------")
         self.display_decoration(
-            "q : Quitter l'application  |  mp : Menu précédent  |  s : Page suivante  |  p : Page précédente",
+            "q : Quitter l'application  \nmp: Menu précédent  \ns : Page suivante  \np : Page précédente",
             "-",
         )
         return ["products_menu", lines_prod_cat_bd, list_produ_display]
@@ -110,7 +109,9 @@ class Display:
         self.display_decoration("Menu des substituts", "_")
         list_subst_display = []
         if lines_subst_prod_cat_db == 0:
-            print("\n" * 2, "Aucun résultat pour ce produit ", "\n" * 2)
+            print("\n" * 2, "Aucun résultat pour ce produit \n( Le nutriscore "
+                            "du produit sélectionné est le plus faible "
+                            "de sa categorie ) ", "\n" * 2)
         else:
             for i in substitutes[0]:
                 stores = self.manage.get_stores_prod(
@@ -134,9 +135,9 @@ class Display:
                 stor_display = stor_display[:-2]
                 print("Magasin  : ", stor_display)
                 print("---------------------------")
-            self.display_decoration(
-                "q : Quitter l'application  |  mp : Menu précédent  |  s : Page suivante  |  p : Page précédente",
-                "-",
+        self.display_decoration(
+                "q : Quitter l'application  \nmp: Menu précédent  \ns : Page suivante  \np : Page précédente",
+                "-"
             )
 
         return ["substitutes_menu", lines_subst_prod_cat_db, list_subst_display]
@@ -183,7 +184,7 @@ class Display:
         stor_display = stor_display[:-2]
         print("Magasin  : ", stor_display)
         self.display_decoration(
-            "q : Quitter l'application  |  mp : Menu précédent  |  e : Enregistrer le substitut",
+            "q : Quitter l'application  \nmp: Menu précédent  \ne : Enregistrer le substitut",
             "-",
         )
         return ["substitute_menu"]
@@ -205,7 +206,7 @@ class Display:
         else:
             print("\n\n\n\n\nCet enregistrement est déjà dans vos favorites\n\n\n\n\n")
         self.display_decoration(
-            "q : Quitter l'application  |  mp : Menu précédent", "-"
+            "q : Quitter l'application  \nmp: Menu précédent", "-"
         )
         return "registration_menu"
 
@@ -238,7 +239,7 @@ class Display:
             print('\nDate d\'enregistrement : ', favorites[0][0][2], '\n')
             print("---------------------------")
         self.display_decoration(
-            "q : Quitter l'application  |  mp : Menu précédent  |  s : Page suivante  |  p : Page précédente",
+            "q : Quitter l'application  \nmp: Menu précédent  \ns : Page suivante  \np : Page précédente",
             "-",
         )
         return ["favorites_menu", favorites[1][0][0], list_favo_display]
@@ -318,13 +319,13 @@ class Display:
         stor_display = stor_display[:-2]
         print("Magasin  : ", stor_display)
         self.display_decoration(
-            "q : Quitter l'application  |  mp : Menu précédent", "-"
+            "q : Quitter l'application  \nmp: Menu précédent", "-"
         )
         return ["comparing_product_substitute"]
 
     def display_decoration(self, title, decoration):
         """Display header and footer of menus."""
         if decoration == "_":
-            print("\n" * 10 + decoration * 50 + "\n" + title + "\n" + decoration * 50)
+            print("\n" * 5 + decoration * 50 + "\n" + title + "\n" + decoration * 50)
         else:
             print(decoration * 50 + "\n" + title + "\n" + decoration * 50)

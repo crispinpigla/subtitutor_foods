@@ -2,7 +2,6 @@
 
 
 from datetime import datetime
-import mysql.connector
 
 
 class Managers:
@@ -98,7 +97,8 @@ class Managers:
     ):
         """This method makes it possible to obtain product pages."""
         query = (
-            "SELECT id, nom, quantite, marque, nutriscore FROM Produits WHERE id IN (SELECT id_produit FROM Categories_produits WHERE nom_categorie = '"
+            "SELECT id, nom, quantite, marque, nutriscore FROM Produits WHERE id IN (SELECT id_produit FROM "
+            "Categories_produits WHERE nom_categorie = '"
             + category_name
             + "' )"
             + " ORDER BY nom LIMIT "
@@ -107,7 +107,8 @@ class Managers:
             + str((page_produ - 1) * size_page_produ)
         )
         query_count = (
-            "SELECT COUNT(*) FROM Produits WHERE id IN (SELECT id_produit FROM Categories_produits WHERE nom_categorie =  '"
+            "SELECT COUNT(*) FROM Produits WHERE id IN (SELECT id_produit FROM Categories_produits WHERE "
+            "nom_categorie =  '"
             + category_name
             + "' )"
         )
@@ -128,7 +129,8 @@ class Managers:
     ):
         """This method makes it possible to obtain substitute pages."""
         query = (
-            "SELECT id, nom, quantite, marque, nutriscore FROM Produits WHERE id IN (SELECT id_produit FROM Categories_produits WHERE nom_categorie = '"
+            "SELECT id, nom, quantite, marque, nutriscore FROM Produits WHERE id IN (SELECT id_produit FROM "
+            "Categories_produits WHERE nom_categorie = '"
             + category_name
             + "' ) AND  ( nutriscore < '"
             + product_nutriscore
@@ -139,7 +141,8 @@ class Managers:
             + str((page_subst - 1) * size_page_subst)
         )
         query_count = (
-            "SELECT COUNT(*) FROM Produits WHERE id IN (SELECT id_produit FROM Categories_produits WHERE nom_categorie =  '"
+            "SELECT COUNT(*) FROM Produits WHERE id IN (SELECT id_produit FROM Categories_produits WHERE "
+            "nom_categorie =  '"
             + category_name
             + "' ) AND  ( nutriscore < '"
             + product_nutriscore
@@ -149,4 +152,4 @@ class Managers:
         result = cursor.fetchall()
         cursor.execute(query_count)
         result_count = cursor.fetchall()
-        return [result, result_count]
+        return [result, result_count] 

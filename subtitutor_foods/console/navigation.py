@@ -1,11 +1,6 @@
 """This module manages the navigation of the application between different menus."""
 
-from datetime import datetime
-
-import mysql.connector
-
 from subtitutor_foods import config
-#from subtitutor_foods.console import display
 
 
 class Navigation:
@@ -241,7 +236,8 @@ class Navigation:
         return status
 
     def ask_comparing_product_substitute(self, user_input):
-        """This method allows you to request a menu when the user is in the comparison menu of a product to his substitution."""
+        """This method allows you to request a menu when the user is in the comparison menu of a product to his
+        substitution. """
         # previous menu selection
         if user_input == "mp":
             status = self.get_display("favorites_menu", self.page_favorites)
