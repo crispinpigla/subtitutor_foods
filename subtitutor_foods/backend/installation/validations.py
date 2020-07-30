@@ -78,10 +78,13 @@ class Validations:
         # Construction of category-product
         for products in self.products_categories:
             for key in products:
-                for categorie in products[key]:
-                    if categorie[0] == " ":
-                        categorie = categorie[1:]
-                    self.products_categories.append((key, categorie))
+                try:
+                    for categorie in products[key]:
+                        if categorie[0] == " ":
+                            categorie = categorie[1:]
+                        self.rows_products_categories.append((key, categorie))
+                except Exception as e:
+                    pass
 
         # Construction of products-stores
         for products in self.products_stores:

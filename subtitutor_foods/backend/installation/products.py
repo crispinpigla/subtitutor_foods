@@ -28,7 +28,7 @@ class InstallationProducts:
     def insert_rows_product(self, validation, cursor, connection):
         """This method allows the insertion of products."""
         data_to_insert = []
-        for product in validation.rows_prods:
+        for product in validation.rows_products:
             data_to_insert.append(
                 tuple(
                     [
