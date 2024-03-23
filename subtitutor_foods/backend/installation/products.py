@@ -1,6 +1,8 @@
 """This module is responsible for creating the table and inserting the
 products. """
 
+import pdb
+
 
 class InstallationProducts:
     """This class is the class of objects responsible for creating the table
@@ -33,19 +35,21 @@ class InstallationProducts:
                 tuple(
                     [
                         product["code"],
-                        product["product_name"],
-                        product.get("quantity", ""),
-                        product.get("brands", ""),
-                        product.get("categories", ""),
-                        product.get("labels", ""),
-                        product.get("ingredients_text", ""),
-                        str(product.get("allergens_tags", "")),
-                        str(product.get("traces_tags", "")),
+                        product["product_name"].encode('ascii', errors='ignore'),
+                        product.get("quantity", "").encode('ascii', errors='ignore'),
+                        product.get("brands", "").encode('ascii', errors='ignore'),
+                        product.get("categories", "").encode('ascii', errors='ignore'),
+                        product.get("labels", "").encode('ascii', errors='ignore'),
+                        product.get("ingredients_text", "").encode('ascii', errors='ignore'),
+                        str(product.get("allergens_tags", "")).encode('ascii', errors='ignore'),
+                        str(product.get("traces_tags", "")).encode('ascii', errors='ignore'),
                         product["nutriscore_data"]["grade"],
                         product.get("url", ""),
                     ]
                 )
             )
+
+        # pdb.set_trace()
         add_products = (
             "INSERT INTO Produits VALUES (%s, %s, %s, %s, %s, %s, %s, %s, "
             "%s, %s, %s) "
